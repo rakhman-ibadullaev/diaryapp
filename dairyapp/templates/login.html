@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <style>
+        @font-face {
+            font-family: Roboto; 
+            src: url(/subpath/Roboto.ttf);
+            font-weight: 300; 
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }                    
+        .header {
+            text-align: center;
+            font-family: Roboto;
+            background-color: #333;
+            color: white;
+            padding: 1px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: calc(100% - 22px);
+            padding: 10px;
+            background: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .register-link p {
+            margin-top: 20px;
+        }
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <p>© "DairyApp". Все права защищены</p>
+    </div>
+    <div class="container">
+        <h1>Вход</h1>
+        <form id="loginForm">
+            <input type="email" name="email" placeholder="Логин" required>
+            <input type="password" name="password" placeholder="Пароль" required>
+            <button type="submit">Войти</button>
+        </form>
+        <div id="message"></div>
+        <div class="register-link">
+            <p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const messageDiv = document.getElementById('message');
+
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch('/login', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+                    return response.json(); // Возвращаемся к использованию json()
+                })
+                .then(data => {
+                    if (data.success) {
+                        messageDiv.style.color = '#28a745';
+                        messageDiv.innerText = 'Успешный вход';
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 1000); 
+                    } else {
+                        messageDiv.style.color = '#d9534f';
+                        messageDiv.innerText = 'Ошибка: ' + data.message;
+                    }
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    messageDiv.style.color = '#d9534f';
+                    console.log(error);
+                    messageDiv.innerText = 'Ошибка при выполнении запроса.';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

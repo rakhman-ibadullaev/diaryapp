@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        @font-face {
+            font-family: Roboto; 
+            src: url(/subpath/Roboto.ttf); 
+            font-weight: 300;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }                    
+        .header {
+            text-align: center;
+            font-family: Roboto;
+            background-color: #333;
+            color: white;
+            padding: 1px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .container {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            font-family: Arial, sans-serif;
+            width: calc(100% - 22px);
+            padding: 10px;
+            background: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #message {
+            margin-top: 20px;
+            color: #28a745;
+            font-size: 1.2em;
+        }
+        .login-link p {
+            margin-top: 20px;
+        }
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <p>© "DairyApp". Все права защищены</p>
+    </div>
+
+    <div class="container">
+        <h1>Регистрация</h1>
+        <form id="registerForm">
+            <select name="role" id="roleSelect" required>
+                <option value="">Выберите роль</option>
+                <option value="student">Ученик</option>
+                <option value="teacher">Учитель</option>
+            </select>
+            <input type="text" name="class" id="classField" class="hidden" placeholder="Класс" required>
+            <input type="text" name="username" placeholder="Имя пользователя" required>
+            <input type="email" name="email" placeholder="Электронная почта" required>
+            <input type="password" name="password" placeholder="Пароль" required>
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        <div id="message"></div>
+        <div class="login-link">
+            <p>Есть аккаунт? <a href="/login">Войти</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.getElementById('roleSelect');
+            const classField = document.getElementById('classField');
+            const registerForm = document.getElementById('registerForm');
+            const messageDiv = document.getElementById('message');
+
+            // Показать/скрыть поле "Класс" в зависимости от выбранной роли
+            roleSelect.addEventListener('change', function() {
+                if (roleSelect.value === 'student') {
+                    classField.classList.remove('hidden'); // Показываем поле для класса
+                    classField.required = true; // Делаем поле обязательным
+                } else {
+                    classField.classList.add('hidden'); // Скрываем поле для класса
+                    classField.required = false; // Убираем обязательность поля
+                }
+            });
+
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    // Собираем данные из формы
+                    const formData = new FormData(registerForm);
+                    const data = {};
+                    formData.forEach((value, key) => {
+                        data[key] = value; // Преобразуем FormData в объект
+                    });
+
+                    fetch('/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json', // обязательно для JSON
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            messageDiv.style.color = '#28a745';
+                            messageDiv.innerText = data.message;
+                            if (data.redirect) {
+                                setTimeout(() => {
+                                    window.location.href = data.redirect;
+                                }, 1000);        
+                            }
+                        } else {
+                            messageDiv.style.color = '#d9534f';
+                            messageDiv.innerText = 'Ошибка: ' + data.message;
+                        }
+                    })
+                    .catch(error => {
+                        messageDiv.style.color = '#d9534f';
+                        console.error('Ошибка:', error);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

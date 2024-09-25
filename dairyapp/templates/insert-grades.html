@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оценки</title>
+    <style>
+        body {
+            font-family: Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+       .header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 24px;
+        }
+       .container {
+            width: 80%;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+       .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+       .form-group label {
+            width: 100%;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+       .form-group input,.form-group select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+       .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+       .button:hover {
+            background-color: #45a049;
+        }
+       .message {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+       .search-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+       .search-container input {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+       .search-container button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+       .search-container button:hover {
+            background-color: #45a049;
+        }
+       .student-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+       .student-list li {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+       .student-list li:hover {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        Внесение оценок
+    </div>
+
+    <div class="container">
+        <h2>Форма для внесения оценки ученику</h2>
+
+        <!-- Добавляем форму -->
+        <form id="student-form">
+            <div class="form-group">
+                <label for="classSelect">Выберите класс:</label>
+                <select id="classSelect">
+                    <option value="">Выберите класс</option>
+                    <option value="1">1 класс</option>
+                    <option value="2">2 класс</option>
+                    <option value="3">3 класс</option>
+                    <option value="4">4 класс</option>
+                    <option value="5">5 класс</option>
+                    <option value="6">6 класс</option>
+                    <option value="7">7 класс</option>
+                    <option value="8">8 класс</option>
+                    <option value="9">9 класс</option>
+                    <option value="10">10 класс</option>
+                    <option value="11">11 класс</option>
+                </select>
+            
+                <label for="studentSelect">Выберите ученика:</label>
+                <select id="studentSelect" disabled>
+                    <option value="">Сначала выберите класс</option>
+                </select>
+
+                <label for="grade">Оценка</label>
+                <select id="grade" name="grade" required>
+                    <option value="">Выберите оценку</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+
+                <label for="workType">Подпись к оценке</label>
+                <input type="text" id="workType" name="workType" placeholder="Если хотите, то добавьте подпись к оценке (Напр. Контрольная)">
+                
+                <label for="subject">Предмет</label>
+                <select id="subject" name="subject" required>
+                    <option value="">Выберите предмет</option>
+                    <option value="mat">Математика</option>
+                    <option value="rus">Русский язык</option>
+                    <option value="ang">Английский язык</option>
+                    <option value="chem">Химия</option>
+                    <option value="bio">Биология</option>
+                    <option value="obsh">Общество</option>
+                    <option value="info">Информатика</option>
+                    <option value="fiz">Физическая культура</option>
+                    <option value="obj">ОБиЗР</option>
+                    <option value="tech">Технология</option>
+                    <option value="izo">Изобразительное исскуство</option>
+                    <option value="phy">Физика</option>
+                    <option value="his">История</option>
+                </select>
+                
+                <label for="date">Дата</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <button type="submit" class="button">Сохранить оценку</button>
+        </form>
+
+        <!-- Блок для сообщений -->
+        <div id="messageDiv" class = "message"></div>
+    </div>
+
+    <script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    const studentSelect = document.getElementById('studentSelect');
+
+    // Функция для отображения студентов в выпадающем списке
+    function displayStudents(students) {
+        populateStudents(students);
+    }
+
+    // Функция для заполнения списка студентов
+    function populateStudents(students) {
+        if (students.length === 0) {
+            studentSelect.innerHTML = '<option value="">Нет доступных студентов</option>'; // Уведомление о том, что нет студентов
+            studentSelect.setAttribute('disabled', true); // Заблокируем селект если студентов нет
+            return;
+        }
+
+        studentSelect.removeAttribute('disabled'); // Разблокируем селект
+        studentSelect.innerHTML = ''; // Очищаем список учеников
+
+        // Добавление начальной опции
+        const initialOption = document.createElement('option');
+        initialOption.value = '';
+        initialOption.text = 'Выберите ученика...';
+        studentSelect.appendChild(initialOption);
+
+        // Заполнение селекта с учениками (именами)
+        students.forEach(student => {
+            const option = document.createElement('option');
+            option.text = student; // Теперь это строка
+            option.value = student; // Можно также использовать имя как значение
+            studentSelect.appendChild(option);
+        });
+    }
+
+    // Функция, чтобы получить студентов с сервера
+    async function fetchStudents(selectedClass) {
+        try {
+            const response = await fetch('/students', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ class: selectedClass }) // Отправляем выбранный класс
+            });
+
+            if (!response.ok) {
+                throw new Error('Сеть ответила с ошибкой: ' + response.status);
+            }
+
+            const students = await response.json();
+            console.log(students); // Здесь вы можете визуально проверить, что приходит
+
+            displayStudents(students); // Вызываем отображение студентов
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+
+    // Вызов fetchStudents при загрузке страницы
+    displayStudents([]); // Изначально показываем пустое состояние
+
+    // Обработчик события для формы
+    document.getElementById('student-form').addEventListener('submit', (e) => {
+        e.preventDefault(); // Отменяем стандартное поведение формы
+
+        // Получаем значения полей формы
+        const classSelect = document.getElementById('classSelect').value;
+        const studentSelect = document.getElementById('studentSelect').value;
+        const grade = document.getElementById('grade').value;
+        const workType = document.getElementById('workType').value;
+        const subject = document.getElementById('subject').value;
+        const date = document.getElementById('date').value;
+
+        const messageDiv = document.getElementById('messageDiv'); // Не забудьте определить messageDiv
+
+        // Проверяем, что все поля заполнены
+        if (classSelect && studentSelect && grade && subject && date) {
+            // Отправляем данные на сервер
+            fetch('/insert-grades', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    class: classSelect,
+                    student: studentSelect,
+                    grade: grade,
+                    workType: workType,
+                    subject: subject,
+                    date: date
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                // Обработка ответа от сервера
+                if (data.success) {
+                    messageDiv.style.color = '#28a745';
+                    messageDiv.innerHTML = 'Оценка сохранена!';
+                } else {
+                    messageDiv.style.color = '#d9534f';
+                    messageDiv.innerHTML = 'Ошибка при сохранении оценки!';
+                }
+            })
+            .catch((error) => {
+                console.error('Ошибка:', error);
+            });
+        } else {
+            messageDiv.style.color = '#d9534f';
+            messageDiv.innerHTML = 'Пожалуйста, заполните все поля!';
+        }
+    });
+
+    // Обработчик изменения класса
+    document.getElementById('classSelect').addEventListener('change', function() {
+        const selectedClass = this.value;
+        if (selectedClass) {
+            fetchStudents(selectedClass); // Передаем выбранный класс в fetchStudents
+        } else {
+            displayStudents([]); // Сбрасываем студентов, если класс не выбран
+        }
+    });
+});
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+

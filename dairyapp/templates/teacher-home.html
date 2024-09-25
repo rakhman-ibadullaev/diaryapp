@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Электронный дневник</title>
+    <style>
+    @font-face {
+        font-family: Open Sans; 
+        src: url(/subpath/favorite.ttf); 
+    }
+    h1 {
+        font-family: Open Sans, 'Light';
+    }
+    @font-face {
+        font-family: Roboto; 
+        src: url(/subpath/Roboto.ttf); 
+    }
+    h1 {
+        font-family: Roboto, 'Light';
+    }
+    @font-face {
+        font-family: Roboto-Mono; 
+        src: url(/subpath/RobotoMono-Light.ttf); 
+    }
+    h1 {
+        font-family: Roboto-Mono, 'Light';
+    }
+    @font-face {
+        font-family: Moderustic; 
+        src: url(/subpath/Moderustic-Light.ttf); 
+    }
+    h1 {
+        font-family: Moderustic, 'Light';
+    }
+
+        body {
+            font-family: Roboto;
+            margin: 0;
+            padding: 0;
+            background: url('/subpath/frt.jpg');
+            background-repeat: no-repeat;
+            background-size: cover; 
+        }
+        .header {
+            font-family: Roboto-Mono;
+            background-color: #1a1919;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .container {
+            width: calc(100% - 300px);
+            width: 1400px;
+            margin: 20px auto;
+            padding-left: 20px;
+            transition: margin-left 0.5s;
+            background: white;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        .main-content {
+            background: white;
+            min-height: 800px;
+            font-size: 21px;
+            padding: 20px;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        }
+        .footer {
+            font-family: Roboto;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            font-size: 16px;
+            margin: 4px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #2d6d31; 
+        }
+        .logout-button {
+            background-color: #d82013; 
+        }
+        .logout-button:hover {
+            background-color: #7a2626; 
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .welcome-text {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #252525;
+            color: white;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 65px;
+            z-index: 1;
+            white-space: nowrap;
+        }
+        .sidebarusers {
+            font-family: Moderustic;
+            text-align: center;
+            box-sizing: border-box;
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #252525;
+            color: white;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 65px;
+            line-height: 1.5;
+            z-index: 1;
+            white-space: nowrap;
+        }
+        .sidebarusers a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebarusers a:hover {
+            background-color: #2d6d31;
+        }
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 16px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #2d6d31;
+        }
+        .closebtn {
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+        #userList {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>DairyApp - школьный мир</h1>
+    </div>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="#" onclick="viewDiary()">Выставить оценку ученику</a>
+        <a href="#" onclick="viewGrades()">Выставить четвертную оценку</a>
+        <a href="#" onclick="viewFinalGrades()">Выставить итоговую оценку </a>
+        <a href="#" onclick="viewAllGrades()">Последние оценки</a>
+    </div>
+    <div id="activeUsersSidebar" class="sidebarusers" style="right: 0; left: auto;">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeActiveUsersNav()">&times;</a>
+        <h3>Активные пользователи:</h3>
+        <div id="activeUsersList"></div>
+    </div>
+    <div class="container" id="mainContainer">
+        <div class="main-content">
+            <h2 class="welcome-text">Добро пожаловать, {{.UserName}}!</h2>
+            <div class="button-container">
+                <button class="button" onclick="openNav()">Дневник</button>
+                <button class="button" onclick="showActiveUsers()">Пользователи в системе</button>
+            <div id="activeUsersList"></div>
+                <button class="button logout-button" onclick="logout()">Выйти</button>
+            </div>
+            <p class="welcome-text">Здесь вы можете просмотреть свои оценки, расписание и другую важную информацию.</p>
+
+            <div class="facts">
+                <h3>Советы по учебе:</h3>
+                <ul>
+                    <li>Планируйте свое время, чтобы успевать заниматься всеми предметами.</li>
+                    <li>Делайте перерывы во время занятий, чтобы мозг отдыхал и лучше усваивал информацию.</li>
+                    <li>Задавайте вопросы учителю, если что-то непонятно.</li>
+                </ul>
+            </div>
+            <div class="facts">
+                <h3>Интересные факты о школе:</h3>
+                <ul>
+                    <li>Первая школа была основана в Древнем Египте около 3000 лет до н.э.</li>
+                    <li>В средневековой Европе обучение проводилось в монастырях и соборах.</li>
+                    <li>Современная система образования сформировалась в XIX веке.</li>
+                </ul>
+            </div>
+            <div class="facts">
+                <h3>Факты об проекте DairyApp:</h3>
+                <ul>
+                    <li>В 15 лет я задумался о создании эффективного веб-ресурса типа клиент-сервер.</li>
+                    <li>Изначально DairyApp должен был быть написан на C++ с использованием фреймворка Qt.</li>
+                    <li>В будущем проект может перейти на базу данных PostgreSQL для работы с большим трафиком.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>© 2025 "DairyApp". Производство Рахмана Ибадуллаева. Все права защищены.</p>
+    </div>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
+
+        function viewDiary() {
+            window.location.href = '/insert-grades';
+        }
+
+        function viewGrades() {
+            window.location.href = '/insert-4-grade';
+        }
+
+        function viewFinalGrades() {
+            window.location.href = '/insert-final-grade';
+        }
+        function viewAllGrades() {
+            window.location.href = "/all-grades"
+        }
+        function logout() {
+            window.location.href = '/logout';
+        }
+        function showActiveUsers() {
+        fetch('/active-users')
+          .then(response => response.json())
+          .then(data => {
+                const activeUsersList = document.getElementById('activeUsersList');
+                activeUsersList.innerHTML = '';
+                data.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.textContent = user;
+                    activeUsersList.appendChild(userItem);
+                });
+                document.getElementById('activeUsersSidebar').style.width = '250px';
+            })
+          .catch(error => console.error('Error:', error));
+        }
+
+        function closeActiveUsersNav() {
+            document.getElementById('activeUsersSidebar').style.width = '0';
+            document.getElementById("mySidebar").style.paddingLeft = "0";
+        }
+    </script>
+</body>
+</html>
+

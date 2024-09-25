@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Последние оценки</title>
+    <style>
+        body {
+            font-family: Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 24px;
+        }
+        .container {
+            width: 80%;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .record-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .record-list li {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .record-list li:hover {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        Последние записи учителя
+    </div>
+
+    <div class="container">
+        <h2>Список последних записей</h2>
+
+        <ul id="record-list" class="record-list">
+            <!-- Здесь будут отображаться последние записи учителя -->
+        </ul>
+    </div>
+
+    <script>
+        // Получаем последние записи учителя с сервера
+        fetch('/all-grades')
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok' + response.statusText);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                const recordList = document.getElementById('record-list');
+                data.forEach((record) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Класс: ${record.class}, Ученик: ${record.student}, Оценка: ${record.grade}, Тип работы: ${record.work_type}, Предмет: ${record.subject}, Дата: ${record.date}, Ученик: ${record.id_student}`;
+                    recordList.appendChild(listItem);
+                });
+            })
+            .catch((error) => {
+                console.error('Ошибка:', error);
+            });
+    </script>
+</body>
+</html>
