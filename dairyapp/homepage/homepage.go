@@ -50,14 +50,14 @@ func authenticate(c echo.Context) (*sessions.Session, error) {
 	}
 
 	// Retrieve user by ID
-	user, err := database.GetUserByID(userID, database.Databasename)
+	username, err := database.GetUserByID(userID, database.Databasename)
 	if err != nil {
 		log.Printf("Ошибка выполнения GetUserByID - %v", err)
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Ошибка получения пользователя")
 	}
 
 	// Update the active users map with the current time
-	activeUsers[user.Name] = time.Now()
+	activeUsers[username] = time.Now()
 
 	// Save session
 	if err := session.Save(c.Request(), c.Response()); err != nil {
@@ -91,14 +91,14 @@ func CleanupInactiveUsers() {
 	log.Printf("Список пользователей - %v", activeUsers)
 }
 func renderPage(c echo.Context, userID string, templateFile string) error {
-	user, err := database.GetUserByID(userID, database.Databasename)
+	username, err := database.GetUserByID(userID, database.Databasename)
 	if err != nil {
 		log.Printf("Ошибка получения username из базы данных: %v", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Ошибка получения данных пользователя"})
 	}
 
 	data := PageData{
-		UserName: user.Name,
+		UserName: username,
 	}
 
 	tmpl, err := template.ParseFiles(templateFile)

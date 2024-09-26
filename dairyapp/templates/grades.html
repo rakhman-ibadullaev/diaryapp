@@ -27,20 +27,28 @@
             border-radius: 8px;
         }
         .record-list {
+            display: flex;
+            flex-wrap: wrap; /* Позволяет элементам переноситься на следующую строку */
             list-style: none;
             padding: 0;
             margin: 0;
         }
         .record-list li {
-            margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
+            margin: 10px;
+            padding: 20px; /* Увеличиваем внутренний отступ */
+            margin-bottom: 15px; /* Отступ между элементами */
+            background-color: #ffffff; /* Фон элемента */
             transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Добавляем тень для глубины */
         }
         .record-list li:hover {
-            background-color: #f4f4f4;
+            background-color: #c7c5c5; /* Цвет фона при наведении */
+        }
+        .record-item {
+            font-weight: bold; /* Жирный текст */
+            margin-bottom: 5px; /* Отступ между строками */
         }
     </style>
 </head>
@@ -59,25 +67,58 @@
     </div>
 
     <script>
-        // Получаем последние записи учителя с сервера
-        fetch('/all-grades')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok' + response.statusText);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                const recordList = document.getElementById('record-list');
-                data.forEach((record) => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `Класс: ${record.class}, Ученик: ${record.student}, Оценка: ${record.grade}, Тип работы: ${record.work_type}, Предмет: ${record.subject}, Дата: ${record.date}, Ученик: ${record.id_student}`;
-                    recordList.appendChild(listItem);
-                });
-            })
-            .catch((error) => {
-                console.error('Ошибка:', error);
-            });
+    // Получаем последние записи учителя с сервера
+    fetch('/all-grades')
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Сетевая ошибка: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then((data) => {
+        const recordList = document.getElementById('record-list');
+        // Очистим предварительный список, если он уже содержит элементы
+        recordList.innerHTML = '';
+        console.log(data);
+
+        if (!Array.isArray(data)) {
+            throw new Error('Ожидался массив данных, но получен другой формат.');
+        }
+
+        data.forEach((record) => {
+            const listItem = document.createElement('li');
+            //listItem.setAttribute('data-id', record.id); // Предполагается, что record.id содержит id записи
+            // Создаем элементы для каждой строки
+            listItem.innerHTML = `
+                <div class="record-item">Класс: ${record.Class}</div>
+                <div class="record-item">Ученик: ${record.StudentName}</div>
+                <div class="record-item">Оценка: ${record.Grade}</div>
+                <div class="record-item">Тип работы: ${record.Work_type}</div>
+                <div class="record-item">Предмет: ${record.Subject}</div>
+                <div class="record-item">Дата: ${record.Date}</div>`
+            ;
+            
+            recordList.appendChild(listItem);
+            console.log(listItem);
+        });
+    })
+    .catch((error) => {
+        console.error('Ошибка:', error);
+        const recordList = document.getElementById('record-list');
+        const errorItem = document.createElement('li');
+        errorItem.textContent = `Произошла ошибка: ${error.message}`;
+        recordList.appendChild(errorItem);
+    });
+    // const recordList = document.getElementById('record-list');
+    // recordList.addEventListener('click', (event) => {
+    //     const listItem = event.target.closest('li');
+    //     if (listItem) {
+    //         const recordId = listItem.getAttribute('data-id');
+    //         console.log('ID записи:', recordId);
+    //     // Здесь можно выполнить нужные действия с recordId
+    //     }
+    // });
     </script>
 </body>
 </html>
+

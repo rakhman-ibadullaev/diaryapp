@@ -20,12 +20,14 @@ type User struct {
 	Role           string
 }
 type Grades struct {
-	ID         string
-	Grade      string
-	Subject    string
-	Work_type  string
-	Date       string
-	id_student string
+	ID          string
+	Class       string
+	Grade       string
+	Subject     string
+	Work_type   string
+	Date        string
+	ID_Student  string
+	StudentName string
 }
 
 func LoginUser(dbname, email, password string) (*User, bool, error) {
@@ -146,23 +148,41 @@ func OpenDataBase(dbname string) (*sql.DB, error) {
 
 	return db, nil // Возвращаем открытое соединение и nil для ошибки
 }
-func GetUserByID(user_id string, dbname string) (*User, error) {
+func GetUserByID(user_id string, dbname string) (string, error) {
 	db, err := sql.Open("sqlite3", dbname)
 	if err != nil {
 		log.Printf("Ошибка открытия базы данных в GetUserByID: %v", err)
-		return &User{}, err
+		return "", err
 	}
 	defer db.Close()
 
-	var user User
+	var username string
 	query := `SELECT username FROM users WHERE id = ?`
-	err = db.QueryRow(query, user_id).Scan(&user.Name)
+	err = db.QueryRow(query, user_id).Scan(&username)
 	if err != nil {
 		log.Printf("Ошибка выполнения GetUserByID: %v", err)
-		return &User{}, nil
+		return "", nil
 	}
 	log.Printf("Успешное выполнение GetUserByID: %v", err)
-	return &user, err
+	return username, err
+}
+func GetClassByID(user_id string, dbname string) (string, error) {
+	db, err := sql.Open("sqlite3", dbname)
+	if err != nil {
+		log.Printf("Ошибка открытия базы данных в GetClassByID: %v", err)
+		return "", err
+	}
+	defer db.Close()
+
+	var class string
+	query := `SELECT class FROM users WHERE id = ?`
+	err = db.QueryRow(query, user_id).Scan(&class)
+	if err != nil {
+		log.Printf("Ошибка выполнения GetClassByID: %v", err)
+		return "", nil
+	}
+	log.Printf("Успешное выполнение GetClassByID: %v", err)
+	return class, err
 }
 func GetUserByName(username, dbname string) (*User, error) {
 	db, err := sql.Open("sqlite3", dbname)
@@ -273,14 +293,22 @@ func AllGrades(dbname, id string) ([]Grades, error) {
 	for rows.Next() {
 		var grade Grades
 		// Сканируем строки в структуру
-		if err := rows.Scan(&grade.ID, &grade.Grade, &grade.Subject, &grade.Work_type, &grade.Date, &grade.id_student); err != nil {
+		if err := rows.Scan(&grade.ID, &grade.Grade, &grade.Subject, &grade.Work_type, &grade.Date, &grade.ID_Student); err != nil {
 			return nil, fmt.Errorf("ошибка при сканировании строки: %w", err)
 		}
-		// Добавляем пользователя в слайс
+		grade.StudentName, err = GetUserByID(grade.ID_Student, dbname)
+		if err != nil {
+			log.Printf("Error in AllGrades %v", err)
+		}
+		grade.Class, err = GetClassByID(grade.ID_Student, dbname)
+		if err != nil {
+			log.Printf("Error in AllGrades %v", err)
+		}
 		grades = append(grades, grade)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("ошибка во время итерации: %w", err)
 	}
+	log.Printf("Grades is %v", grades)
 	return grades, nil
 }

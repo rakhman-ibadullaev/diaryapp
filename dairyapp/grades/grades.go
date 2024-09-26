@@ -102,26 +102,23 @@ func GetStudentsList(c echo.Context) error {
 
 func DeleteGrades() {}
 
+func AllGradesHTML(c echo.Context) error {
+	tmpl, err := template.ParseFiles("templates/grades.html")
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	tmpl.Execute(c.Response(), nil)
+	return c.Render(http.StatusOK, "grades.html", nil)
+}
+
 func AllGrades(c echo.Context) error {
-	if c.Request().Method == http.MethodGet {
-		tmpl, err := template.ParseFiles("templates/grades.html")
-		if err != nil {
-			return c.String(http.StatusInternalServerError, err.Error())
-		}
-		tmpl.Execute(c.Response(), nil)
-		c.Render(http.StatusOK, "grades.html", nil)
+	session, err := store.Get(c.Request(), "session-name")
+	id_teacher := session.Values["userID"].(string)
 
-		session, err := store.Get(c.Request(), "session-name")
-		id_teacher := session.Values["userID"].(string)
-
-		grades, err := database.AllGrades(database.Databasename, id_teacher)
-		if err != nil {
-			log.Printf("Ошибка AllGrades %v", err)
-		}
-		return c.JSON(http.StatusOK, grades)
+	grades, err := database.AllGrades(database.Databasename, id_teacher)
+	log.Printf("Grades равен %v", grades)
+	if err != nil {
+		log.Printf("Ошибка AllGrades %v", err)
 	}
-	if c.Request().Method == http.MethodDelete {
-
-	}
-	return nil
+	return c.JSON(http.StatusOK, grades)
 }

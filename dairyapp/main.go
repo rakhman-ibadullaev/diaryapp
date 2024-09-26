@@ -61,7 +61,8 @@ func main() {
 	e.GET("/insert-grades", grades.InsertGradesHandler, RoleMiddleware(store, "admin", "teacher"))
 	e.POST("/insert-grades", grades.InsertGradesHandler)
 	//Маршруты оценок-записей для просмотра учителя
-	e.GET("/all-grades", grades.AllGrades)
+	e.GET("/grades", grades.AllGradesHTML)
+	e.GET("/all-grades", grades.AllGrades, RoleMiddleware(store, "admin", "teacher"))
 	// Дополнительные функции
 	go homepage.CleanupInactiveUsers()
 
