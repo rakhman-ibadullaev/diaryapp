@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение удаления</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    
+    .modal {
+        display: none; /* Скрываем модальное окно по умолчанию */
+        position: fixed;
+        z-index: 1; /* Устанавливаем модальное окно поверх остальных */
+        left: 0;
+        top: 0;
+        width: 100%; /* Ширина на весь экран */
+        height: 100%; /* Высота на весь экран */
+        overflow: auto; /* Добавляем прокрутку при необходимости */
+        background-color: rgb(0,0,0); /* Черный фон с прозрачностью */
+        background-color: rgba(0,0,0,0.4); /* Фон с прозрачностью */
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% сверху и центрируем по горизонтали */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 300px; /* Ширина модального окна */
+        text-align: center; /* Центрируем текст */
+        border-radius: 8px; /* Закругляем углы */
+    }
+    
+    .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close-button:hover,
+    .close-button:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    
+    button {
+        margin: 10px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    #confirmButton {
+        background-color: #4CAF50; /* Зеленый цвет для кнопки подтверждения */
+        color: white;
+    }
+    
+    #cancelButton {
+        background-color: #f44336; /* Красный цвет для кнопки отмены */
+        color: white;
+    }
+    </style>
+</head>
+<body>
+
+<button id="deleteButton">Удалить запись</button>
+
+<!-- Модальное окно -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" id="closeButton">&times;</span>
+        <h2>Подтверждение действия</h2>
+        <p>Вы уверены, что хотите удалить запись?</p>
+        <button id="confirmButton">Да</button>
+        <button id="cancelButton">Нет</button>
+    </div>
+</div>
+
+<script> const deleteButton = document.getElementById('deleteButton');
+    const modal = document.getElementById('modal');
+    const closeButton = document.getElementById('closeButton');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.getElementById('cancelButton');
+    
+    // Открываем модальное окно при нажатии на кнопку удаления
+    deleteButton.addEventListener('click', function() {
+        modal.style.display = 'block';
+    });
+    
+    // Закрываем модальное окно при нажатии на кнопку закрытия
+    closeButton.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+    
+    // Обработка подтверждения удаления
+    confirmButton.addEventListener('click', function() {
+        console.log('Запись удалена'); // Логика удаления записи
+        modal.style.display = 'none';
+    });
+    
+    // Закрываем модальное окно при нажатии на кнопку отмены
+    cancelButton.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+    
+    // Закрываем модальное окно, если пользователь нажимает вне него
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    </script>
+</body>
+</html>

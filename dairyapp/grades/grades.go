@@ -100,7 +100,28 @@ func GetStudentsList(c echo.Context) error {
 	return nil
 }
 
-func DeleteGrades() {}
+func DeleteGrades(c echo.Context) error {
+	var data struct {
+		ID string `json:"id"`
+	}
+	// Декодирование JSON из тела запроса
+	if err := c.Bind(&data); err != nil {
+		// Ошибка декодирования данных
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"success": false,
+			"message": "Неверный формат данных",
+		})
+	}
+	log.Printf("ID is %v", data.ID)
+	err := database.DeleteGrades(database.Databasename, data.ID)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"success": true,
+		"message": "Успешно удалена запись",
+	})
+}
 
 func AllGradesHTML(c echo.Context) error {
 	tmpl, err := template.ParseFiles("templates/grades.html")
@@ -116,7 +137,7 @@ func AllGrades(c echo.Context) error {
 	id_teacher := session.Values["userID"].(string)
 
 	grades, err := database.AllGrades(database.Databasename, id_teacher)
-	log.Printf("Grades равен %v", grades)
+	log.Printf("Class равен %v", grades)
 	if err != nil {
 		log.Printf("Ошибка AllGrades %v", err)
 	}

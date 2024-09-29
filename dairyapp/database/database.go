@@ -312,3 +312,16 @@ func AllGrades(dbname, id string) ([]Grades, error) {
 	log.Printf("Grades is %v", grades)
 	return grades, nil
 }
+func DeleteGrades(dbname, id string) error {
+	db, err := sql.Open("sqlite3", dbname)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	_, err = db.Exec("DELETE FROM grades WHERE id = ?", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return err
+}

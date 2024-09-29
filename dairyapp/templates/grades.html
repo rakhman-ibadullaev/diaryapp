@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Последние оценки</title>
     <style>
+        @font-face {
+            font-family: Roboto; 
+            src: url(/subpath/Roboto.ttf); 
+            font-weight: 300;
+        }
+        @font-face {
+            font-family: Ninja Sans; 
+            src: url(/subpath/NunitoSans_10pt-Medium.ttf); 
+            font-weight: 300;
+        }
         body {
             font-family: Roboto, sans-serif;
             margin: 0;
@@ -33,7 +44,23 @@
             padding: 0;
             margin: 0;
         }
+        .message {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
         .record-list li {
+            font-family: Ninja Sans;
+            width: 300px; /* Задайте фиксированную ширину */
+            max-height: 250px; /* Задайте максимальную высоту */
+            overflow: hidden;
             border: 1px solid #ccc;
             border-radius: 5px;
             margin: 10px;
@@ -50,6 +77,89 @@
             font-weight: bold; /* Жирный текст */
             margin-bottom: 5px; /* Отступ между строками */
         }
+        .delete-button {
+            background-color: red;
+            border: none; /* Без границы */
+            cursor: pointer; /* Указатель при наведении */
+            font-size: 14px; /* Размер иконки */
+            color: white; /* Цвет иконки */
+            transition: color 0.3s; /* Плавный переход цвета */
+            display: flex; /* Чтобы иконка и текст были на одной линии */
+            align-items: center; /* Вертикальное выравнивание иконки и текста */
+            gap: 5px; /* Отступ между иконкой и текстом */ 
+            padding: 5px 10px; /* Отступы */
+            border-radius: 5px; /* Закругленные углы */
+            margin-top: 5px;
+        }
+            .modal {
+            display: none; /* Скрываем модальное окно по умолчанию */
+            position: fixed;
+            z-index: 1; /* Устанавливаем модальное окно поверх остальных */
+            left: 0;
+            top: 0;
+            width: 100%; /* Ширина на весь экран */
+            height: 100%; /* Высота на весь экран */
+            overflow: auto; /* Добавляем прокрутку при необходимости */
+            background-color: rgb(0,0,0); /* Черный фон с прозрачностью */
+            background-color: rgba(0,0,0,0.4); /* Фон с прозрачностью */
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% сверху и центрируем по горизонтали */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px; /* Ширина модального окна */
+            text-align: center; /* Центрируем текст */
+            border-radius: 8px; /* Закругляем углы */
+        }
+        
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .delete-button:hover {
+            background-color: rgb(94, 0, 0); /* Цвет при наведении */
+        }
+        .edit-button {
+            background-color: #007bff; /* Цвет фона */
+            color: white; /* Цвет текста / иконки */
+            border: none; /* Без границ */
+            border-radius: 5px; /* Закругленные углы */
+            padding: 5px 10px; /* Отступы */
+            cursor: pointer; /* Указатель мыши в виде руки */
+            font-size: 14px; /* Размер шрифта */
+            display: flex; /* Чтобы иконка и текст были на одной линии */
+            align-items: center; /* Вертикальное выравнивание иконки и текста */
+            gap: 5px; /* Отступ между иконкой и текстом */   
+        }
+        .edit-button:hover {
+            background-color: #03448a; /* Цвет фона при наведении */
+        }
+        #confirmButton {
+            background-color: #4CAF50; /* Зеленый цвет для кнопки подтверждения */
+            color: white;
+        }
+        #confirmButton:hover {
+            background-color: #2e6930;
+        }
+        #cancelButton {
+            background-color: #f44336; /* Красный цвет для кнопки отмены */
+            color: white;
+        }
+        #cancelButton:hover {
+            background-color: #5f1b16;
+        }
     </style>
 </head>
 <body>
@@ -65,6 +175,15 @@
             <!-- Здесь будут отображаться последние записи учителя -->
         </ul>
     </div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeButton">&times;</span>
+            <h2>Подтверждение действия</h2>
+            <p>Вы уверены, что хотите удалить запись?</p>
+            <button id="confirmButton">Да</button>
+            <button id="cancelButton">Нет</button>
+        </div>
+    </div>
 
     <script>
     // Получаем последние записи учителя с сервера
@@ -79,7 +198,6 @@
         const recordList = document.getElementById('record-list');
         // Очистим предварительный список, если он уже содержит элементы
         recordList.innerHTML = '';
-        console.log(data);
 
         if (!Array.isArray(data)) {
             throw new Error('Ожидался массив данных, но получен другой формат.');
@@ -87,20 +205,30 @@
 
         data.forEach((record) => {
             const listItem = document.createElement('li');
-            //listItem.setAttribute('data-id', record.id); // Предполагается, что record.id содержит id записи
+            listItem.setAttribute('data-id', record.ID);
             // Создаем элементы для каждой строки
             listItem.innerHTML = `
+            <div class="record-container">
                 <div class="record-item">Класс: ${record.Class}</div>
                 <div class="record-item">Ученик: ${record.StudentName}</div>
                 <div class="record-item">Оценка: ${record.Grade}</div>
-                <div class="record-item">Тип работы: ${record.Work_type}</div>
+                <div class="record-item">Подпись к работе: ${record.Work_type}</div>
                 <div class="record-item">Предмет: ${record.Subject}</div>
-                <div class="record-item">Дата: ${record.Date}</div>`
-            ;
+                <div class="record-item">Дата: ${record.Date}</div>
+                <button class="edit-button" data-id="${record.ID}">
+                    <i class="fas fa-edit"></i> Редактировать запись
+                </button>
+                <button class="delete-button">
+                    <i class="fas fa-trash"></i> Удалить запись
+                </button>
+                <div class="message"></div>
+            </div>`;
             
             recordList.appendChild(listItem);
-            console.log(listItem);
         });
+
+        // Добавляем обработчики событий для кнопок после их создания
+        addEventListenersToButtons();
     })
     .catch((error) => {
         console.error('Ошибка:', error);
@@ -109,15 +237,88 @@
         errorItem.textContent = `Произошла ошибка: ${error.message}`;
         recordList.appendChild(errorItem);
     });
-    // const recordList = document.getElementById('record-list');
-    // recordList.addEventListener('click', (event) => {
-    //     const listItem = event.target.closest('li');
-    //     if (listItem) {
-    //         const recordId = listItem.getAttribute('data-id');
-    //         console.log('ID записи:', recordId);
-    //     // Здесь можно выполнить нужные действия с recordId
-    //     }
-    // });
+
+// Функция для добавления обработчиков событий к кнопкам
+function addEventListenersToButtons() {
+    const recordList = document.getElementById('record-list');
+    const modal = document.getElementById('modal');
+    const closeButton = document.getElementById('closeButton');
+    const confirmButton = document.getElementById('confirmButton');
+    const cancelButton = document.getElementById('cancelButton');
+    const messageDiv = document.getElementById('message-div');
+
+    let recordIdToDelete = null; // Идентификатор записи для удаления
+
+    // Добавляем обработчик события к списку
+    recordList.addEventListener('click', (event) => {
+        // Проверяем, является ли цель нажатием кнопки удаления
+        if (event.target.closest('.delete-button')) {
+            const listItem = event.target.closest('li');
+            if (listItem) {
+                recordIdToDelete = listItem.getAttribute('data-id');
+                console.log('ID записи:', recordIdToDelete);
+                modal.style.display = 'block'; // Открываем модальное окно
+            }
+        }
+
+        // Обработка редактирования
+        if (event.target.closest('.edit-button')) {
+            const listItem = event.target.closest('li');
+            if (listItem) {
+                const recordId = listItem.getAttribute('data-id');
+                console.log('Редактирование - ID записи:', recordId);
+                // Здесь можно выполнить нужные действия с recordId
+            }
+        }
+    });
+
+    // Обработка подтверждения удаления
+    confirmButton.addEventListener('click', () => {
+        if (recordIdToDelete) {
+            fetch('/delete-grades', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: recordIdToDelete })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                // Обработка ответа от сервера
+                if (data.success) {
+                    const listItem = document.querySelector(`li[data-id='${recordIdToDelete}']`);
+                    if (listItem) {
+                        recordList.removeChild(listItem);
+                    }
+                    messageDiv.innerHTML = 'Запись удалена';
+                } else {
+                    messageDiv.innerHTML = 'Ошибка при удалении записи!';
+                }
+            })
+            .catch((error) => {
+                console.error('Ошибка:', error);
+            });
+        }
+        modal.style.display = 'none'; // Закрываем модальное окно
+    });
+
+    // Закрываем модальное окно
+    closeButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // Отключаем модальное окно при нажатии на кнопку "Нет"
+    cancelButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // Закрываем модальное окно, если пользователь нажимает вне него
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
     </script>
 </body>
 </html>

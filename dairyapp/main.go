@@ -63,9 +63,10 @@ func main() {
 	//Маршруты оценок-записей для просмотра учителя
 	e.GET("/grades", grades.AllGradesHTML)
 	e.GET("/all-grades", grades.AllGrades, RoleMiddleware(store, "admin", "teacher"))
+	//Маршрут удаление записи
+	e.POST("/delete-grades", grades.DeleteGrades)
 	// Дополнительные функции
 	go homepage.CleanupInactiveUsers()
-
 	// Открытие базы данных
 	database.OpenDataBase(database.Databasename)
 
