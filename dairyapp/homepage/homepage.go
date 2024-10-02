@@ -115,6 +115,14 @@ func renderPage(c echo.Context, userID string, templateFile string) error {
 
 	return nil
 }
+func DiaryPage(c echo.Context) error {
+	tmpl, err := template.ParseFiles("templates/diaryapp.html")
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	tmpl.Execute(c.Response(), nil)
+	return c.Render(http.StatusOK, "diaryapp.html", nil)
+}
 
 // StudentHomepage handles rendering the homepage for students
 func StudentHomepage(c echo.Context) error {

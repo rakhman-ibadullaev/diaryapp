@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Оценки</title>
     <style>
         @font-face {
@@ -23,6 +24,29 @@
             padding: 10px 0;
             font-size: 24px;
             font-weight: 500;
+        }
+        .back-button {
+            font-family: Roboto, sans-serif;
+            font-size: 15px;
+            background-color: #333;
+            color: white;
+            position: absolute; 
+            left: 1px;
+            top: 5px;
+            z-index: 10;
+            border-radius: 10px;
+            padding: 10px 15px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            text-decoration: none; 
+        }
+        .back-button:hover {
+            color: rgb(124, 124, 124);
+        }
+        .back-button i {
+            margin-right: 10px; /* отступ между иконкой и текстом */
+            font-size: 20px; /* увеличенный размер иконки */
         }
        .container {
             width: 80%;
@@ -119,6 +143,10 @@
     </div>
 
     <div class="container">
+        <a href="/teacher/home" class="back-button">  
+            <i class="fas fa-home"></i> 
+            На главную
+        </a>
         <h2>Форма для внесения оценки ученику</h2>
 
         <!-- Добавляем форму -->

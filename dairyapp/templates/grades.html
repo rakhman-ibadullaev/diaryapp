@@ -44,6 +44,29 @@
             padding: 0;
             margin: 0;
         }
+        .back-button {
+            font-family: Roboto, sans-serif;
+            font-size: 15px;
+            background-color: #333;
+            color: white;
+            position: absolute; 
+            left: 1px;
+            top: 10px;
+            z-index: 10;
+            border-radius: 10px;
+            padding: 10px 15px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            text-decoration: none; 
+        }
+        .back-button:hover {
+            color: rgb(124, 124, 124);
+        }
+        .back-button i {
+            margin-right: 10px; /* отступ между иконкой и текстом */
+            font-size: 20px; /* увеличенный размер иконки */
+        }
         .message {
             margin-top: 20px;
             font-size: 16px;
@@ -59,7 +82,7 @@
         .record-list li {
             font-family: Ninja Sans;
             width: 300px; /* Задайте фиксированную ширину */
-            max-height: 250px; /* Задайте максимальную высоту */
+            max-height: 300px; /* Задайте максимальную высоту */
             overflow: hidden;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -91,7 +114,7 @@
             border-radius: 5px; /* Закругленные углы */
             margin-top: 5px;
         }
-            .modal {
+        .modal {
             display: none; /* Скрываем модальное окно по умолчанию */
             position: fixed;
             z-index: 1; /* Устанавливаем модальное окно поверх остальных */
@@ -163,12 +186,14 @@
     </style>
 </head>
 <body>
-
     <div class="header">
-        Последние записи учителя
+        Последние Ваши записи
     </div>
-
     <div class="container">
+        <a href="/teacher/home" class="back-button">  
+            <i class="fas fa-home"></i> 
+            На главную
+        </a>
         <h2>Список последних записей</h2>
 
         <ul id="record-list" class="record-list">
@@ -212,7 +237,8 @@
                 <div class="record-item">Класс: ${record.Class}</div>
                 <div class="record-item">Ученик: ${record.StudentName}</div>
                 <div class="record-item">Оценка: ${record.Grade}</div>
-                <div class="record-item">Подпись к работе: ${record.Work_type}</div>
+                <div class="record-item">Подпись к работе: </div>
+                <div class="record-item">${record.Work_type}</div>
                 <div class="record-item">Предмет: ${record.Subject}</div>
                 <div class="record-item">Дата: ${record.Date}</div>
                 <button class="edit-button" data-id="${record.ID}">
@@ -290,10 +316,7 @@ function addEventListenersToButtons() {
                     if (listItem) {
                         recordList.removeChild(listItem);
                     }
-                    messageDiv.innerHTML = 'Запись удалена';
-                } else {
-                    messageDiv.innerHTML = 'Ошибка при удалении записи!';
-                }
+                } 
             })
             .catch((error) => {
                 console.error('Ошибка:', error);
@@ -318,6 +341,9 @@ function addEventListenersToButtons() {
             modal.style.display = 'none';
         }
     });
+}
+function BackRedirect() {
+    window.location.href = "/teacher/home"
 }
     </script>
 </body>

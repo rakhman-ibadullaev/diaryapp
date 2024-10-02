@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiaryApp - Ваш личный дневник</title>
+    <style>
+        @font-face {
+            font-family: Roboto; 
+            src: url(/subpath/Roboto.ttf); 
+            font-weight: 300;
+        }
+        body {
+            font-family: Roboto;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #000000;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            color: #000000;
+            background: white;
+            font-size: 18px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #000000;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #999999;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 1px;
+            background-color: #000000;
+            color: white;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>D i a r y A p p</h1>
+    <p>Ваш школьный дневник в кармане!</p>
+</header>
+
+<div class="container">
+    <h2>О приложении</h2>
+    <p>DiaryApp - это удобное и простое в использовании приложение для школьного дневника. Смотрите свои оценки в любом времени. Удобный интерфейс и удобная система вставки оценки.</p>
+
+    <h3>Основные функции:</h3>
+    <ul>
+        <li>Безопасное хранение записей с использованием надежной системы шифрования.</li>
+        <li>Высокая производительность и удобство.</li>
+        <li>Возможность поиска по записям для быстрого доступа к необходимой информации.</li>
+        <li>Кросс-платформенная доступность: доступно на всех ваших устройствах.</li>
+    </ul>
+
+    <h3>Почему выбрать DiaryApp?</h3>
+    <p>Мы понимаем, как важно меньше времени тратить на просмотр оценок. DiaryApp предлагает интуитивно понятный интерфейс, чтобы вы могли сосредоточиться на том, что действительно важно - на вашей успеваемости .</p>
+
+    <a href="/doc/tech" class="button">Техническая документация</a>
+    <a class="button" onclick="goBack()">Назад</a>
+</div>
+
+<footer>
+    <p>&copy; 2025 "DiaryApp". Все права защищены.</p>
+</footer>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+</body>
+</html>

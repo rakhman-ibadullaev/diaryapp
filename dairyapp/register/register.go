@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"unicode/utf8"
 
 	"github.com/labstack/echo/v4"
 )
@@ -39,21 +40,28 @@ func RegisterHandler(c echo.Context) error {
 		}
 
 		if result {
-			// Регистрация пользователя
-			err = database.RegisterUser(database.Databasename, data.Username, data.Email, data.Password, data.Role, data.Class)
-			if err != nil {
-				return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			if utf8.RuneCountInString(data.Password) >= 6 {
+				err = database.RegisterUser(database.Databasename, data.Username, data.Email, data.Password, data.Role, data.Class)
+				if err != nil {
+					return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+						"success": false,
+						"message": "Ошибка регистрации пользователя",
+					})
+				}
+
+				return c.JSON(http.StatusOK, map[string]interface{}{
+					"success":  true,
+					"message":  "Успешная регистрация",
+					"redirect": "/login",
+				})
+			} else {
+				return c.JSON(http.StatusOK, map[string]interface{}{
 					"success": false,
-					"message": "Ошибка регистрации пользователя",
+					"message": "Пароль должен быть больше 6 символов!",
 				})
 			}
-
-			return c.JSON(http.StatusOK, map[string]interface{}{
-				"success":  true,
-				"message":  "Успешная регистрация",
-				"redirect": "/login",
-			})
-		} else {
+		}
+		if !result {
 			return c.JSON(http.StatusConflict, map[string]interface{}{
 				"success": false,
 				"message": "Пользователь с таким именем или почтой уже занят",

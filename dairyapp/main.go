@@ -53,7 +53,7 @@ func main() {
 	// Маршруты основной страницы
 	e.GET("/student/home", homepage.StudentHomepage, RoleMiddleware(store, "admin", "student"))
 	e.GET("/teacher/home", homepage.TeacherHomepage, RoleMiddleware(store, "admin", "teacher"))
-
+	e.GET("/diaryapp", homepage.DiaryPage, RoleMiddleware(store, "admin", "teacher", "student"))
 	e.GET("/active-users", homepage.ActiveUsersHandler, RoleMiddleware(store, "admin", "teacher", "student"))
 	//Маршруты внесения оценок
 	e.POST("/students", grades.GetStudentsList)
