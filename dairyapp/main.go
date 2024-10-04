@@ -7,6 +7,7 @@ import (
 	"dairyapp/key"
 	"dairyapp/login"
 	"dairyapp/register"
+	"dairyapp/schedule"
 	"fmt"
 	"log"
 	"net/http"
@@ -65,6 +66,9 @@ func main() {
 	e.GET("/all-grades", grades.AllGrades, RoleMiddleware(store, "admin", "teacher"))
 	//Маршрут удаление записи
 	e.POST("/delete-grades", grades.DeleteGrades)
+	//Маршрут для просмотра оценок учеником
+	e.GET("/dairy", schedule.ScheduleHand)
+	e.POST("/dairy", schedule.ScheduleHand)
 	// Дополнительные функции
 	go homepage.CleanupInactiveUsers()
 	// Открытие базы данных
