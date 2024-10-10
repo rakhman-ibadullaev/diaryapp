@@ -15,19 +15,19 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
             display: flex;
+            background-color: #f4f4f4;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }                    
-        .header {
+        .footer {
             text-align: center;
             font-family: Roboto;
             background-color: #333;
             color: white;
             padding: 1px 0;
-            position: fixed;
+            position: absolute;
             bottom: 0;
             width: 100%;
         }
@@ -85,10 +85,6 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <p>© "DiaryApp". Все права защищены</p>
-    </div>
-
     <div class="container">
         <h1>Регистрация</h1>
         <form id="registerForm">
@@ -108,7 +104,9 @@
             <p>Есть аккаунт? <a href="/login">Войти</a></p>
         </div>
     </div>
-
+    <div class="footer">
+        <p>© "DiaryApp". Все права защищены</p>
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const roleSelect = document.getElementById('roleSelect');

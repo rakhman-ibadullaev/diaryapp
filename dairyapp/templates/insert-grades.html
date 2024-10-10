@@ -134,6 +134,16 @@
        .student-list li:hover {
             background-color: #f4f4f4;
         }
+        .back-button span {
+            display: inline; /* или display: block; или любое другое значение, которое вам нужно */
+        }
+
+        /* Медиа-запрос для мобильных устройств */
+        @media only screen and (max-width: 768px) {
+            .back-button span {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -145,7 +155,7 @@
     <div class="container">
         <a href="/teacher/home" class="back-button">  
             <i class="fas fa-home"></i> 
-            На главную
+            <span>На главную</span>
         </a>
         <h2>Форма для внесения оценки ученику</h2>
 

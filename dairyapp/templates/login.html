@@ -16,24 +16,25 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
-            display: flex;
             justify-content: center;
             align-items: center;
+            display:flex;
             height: 100vh;
         }                    
-        .header {
+        .footer {
             text-align: center;
             font-family: Roboto;
             background-color: #333;
             color: white;
             padding: 1px 0;
-            position: fixed;
-            bottom: 0;
+            position: absolute;
+            bottom: 0px;
             width: 100%;
         }
         .container {
+            margin-top: 50px;
             max-width: 600px;
-            margin: 0 auto;
+            margin: auto;
             padding: 20px;
             background: #fff;
             border-radius: 8px;
@@ -79,9 +80,7 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <p>© "DiaryApp". Все права защищены</p>
-    </div>
+
     <div class="container">
         <h1>Вход</h1>
         <form id="loginForm">
@@ -93,6 +92,9 @@
         <div class="register-link">
             <p>Нет аккаунта? <a href="/register">Зарегистрироваться</a></p>
         </div>
+    </div>    
+    <div class="footer">
+        <p>© "DiaryApp". Все права защищены</p>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

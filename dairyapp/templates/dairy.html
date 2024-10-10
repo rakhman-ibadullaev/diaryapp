@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Дневник оценок</title>
     <style>
+        @font-face {
+            font-family: Ninja Sans; 
+            src: url(/subpath/NunitoSans_10pt-Medium.ttf); 
+            font-weight: 300;
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -38,32 +43,78 @@
             border-radius: 5px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
+        .record-list {
+            display: flex;
+            flex-wrap: wrap; /* Позволяет элементам переноситься на следующую строку */
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .record-list li {
+            font-family: Ninja Sans;
+            width: 300px; /* Задайте фиксированную ширину */
+            max-height: 300px; /* Задайте максимальную высоту */
+            overflow: hidden;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 20px; /* Увеличиваем внутренний отступ */
+            margin-bottom: 15px; /* Отступ между элементами */
+            background-color: #ffffff; /* Фон элемента */
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Добавляем тень для глубины */
+        }
+        .record-list li:hover {
+            background-color: #c7c5c5; /* Цвет фона при наведении */
+        }
     </style>
 </head>
 <body>
     <h1>Дневник оценок</h1>
-    <form method="GET" action="/dairy">
-        <label for="date">Дата:</label>
-        <input type="date" name="date" id="date" required>
-        <button type="submit">Показать оценки</button>
-    </form>
+    <ul id="record-list" class="record-list">
 
-    <form method="POST" action="/dairy">
-        <input type="hidden" name="date" value="{{.SelectedDate}}">
-        <input type="text" name="subject" placeholder="Предмет" required>
-        <input type="text" name="score" placeholder="Оценка" required>
-        <button type="submit">Добавить оценку</button>
-    </form>
-
-    {{if .Grades}}
-    <h2>Оценки на {{.SelectedDate}}</h2>
-    <ul>
-        {{range .Grades}}
-        <li>{{.Subject}}: {{.Score}}</li>
-        {{end}}
     </ul>
-    {{else}}
-    <h2>Нет оценок для этой даты.</h2>
-    {{end}}
+<script>
+    fetch('/diary')
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Сетевая ошибка: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then((data) => {
+        const recordList = document.getElementById('record-list');
+        // Очистим предварительный список, если он уже содержит элементы
+        recordList.innerHTML = '';
+
+        if (!Array.isArray(data)) {
+            throw new Error('Ожидался массив данных, но получен другой формат.');
+        }
+
+        data.forEach((record) => {
+            const listItem = document.createElement('li');
+            listItem.setAttribute('data-id', record.ID);
+            // Создаем элементы для каждой строки
+            listItem.innerHTML = `
+            <div class="record-container">
+                <div class="record-item">Класс: ${record.ID}</div>
+                <div class="record-item">Ученик: ${record.Subject}</div>
+                <div class="record-item">Оценка: ${record.Grade}</div>
+                <div class="record-item">Подпись к работе: </div>
+                <div class="record-item">${record.Work_type}</div>
+            </div>`;
+            
+            recordList.appendChild(listItem);
+        });
+    })
+    .catch((error) => {
+        console.error('Ошибка:', error);
+        const recordList = document.getElementById('record-list');
+        const errorItem = document.createElement('li');
+        errorItem.textContent = `Произошла ошибка: ${error.message}`;
+        recordList.appendChild(errorItem);
+    });
+</script>
+
 </body>
 </html>

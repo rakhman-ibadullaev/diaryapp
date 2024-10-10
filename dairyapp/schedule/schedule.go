@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
@@ -34,24 +33,13 @@ var gradesData = make(map[string][]Grade)
 
 func ScheduleHand(c echo.Context) error {
 	if c.Request().Method == http.MethodGet {
-
 		tmpl, err := template.ParseFiles("templates/dairy.html")
 		if err != nil {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
-		date := c.QueryParam("date")
-		if date == "" {
-			date = time.Now().Format("2006-01-02") // Если дата не выбрана, показываем сегодня
-		}
-		grades := gradesData[date]
-
-		pageData := PageData{
-			SelectedDate: date,
-			Grades:       grades,
-		}
 
 		tmpl.Execute(c.Response(), nil)
-		return c.Render(http.StatusOK, "diary.html", pageData)
+		return c.Render(http.StatusOK, "diary.html", nil)
 	}
 	if c.Request().Method == http.MethodPost {
 		date := c.FormValue("date")

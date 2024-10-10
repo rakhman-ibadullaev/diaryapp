@@ -331,7 +331,7 @@ func GetSchedules(dbname, date, id string) ([]Grades, error) {
 		return nil, err
 	}
 	defer db.Close()
-	query := `SELECT grade, subject, work_type, date FROM grades WHERE id_student = ? AND date = ? `
+	query := `SELECT id, grade, subject, work_type, FROM grades WHERE id_student = ? AND date = ? `
 	// Выполняем запрос к базе данных
 	rows, err := db.Query(query, id, date)
 	if err != nil {
@@ -342,7 +342,7 @@ func GetSchedules(dbname, date, id string) ([]Grades, error) {
 	for rows.Next() {
 		var grade Grades
 		// Сканируем строки в структуру
-		if err := rows.Scan(&grade.Grade, &grade.Subject, &grade.Work_type); err != nil {
+		if err := rows.Scan(&grade.ID, &grade.Grade, &grade.Subject, &grade.Work_type); err != nil {
 			return nil, fmt.Errorf("ошибка при сканировании строки: %w", err)
 		}
 		log.Printf("%v", grade)

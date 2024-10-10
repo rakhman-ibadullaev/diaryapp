@@ -67,8 +67,8 @@ func main() {
 	//Маршрут удаление записи
 	e.POST("/delete-grades", grades.DeleteGrades)
 	//Маршрут для просмотра оценок учеником
-	e.GET("/dairy", schedule.ScheduleHand)
-	e.POST("/dairy", schedule.ScheduleHand)
+	e.GET("/diary", schedule.ScheduleHand)
+	e.POST("/diary", schedule.ScheduleHand)
 	// Дополнительные функции
 	go homepage.CleanupInactiveUsers()
 	// Открытие базы данных

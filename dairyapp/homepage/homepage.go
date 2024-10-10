@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"regexp"
 	"sync"
 	"time"
 
@@ -143,6 +144,10 @@ func StudentHomepage(c echo.Context) error {
 	}
 
 	log.Printf("Homepage for student: userID=%s", userID)
+	userAgent := c.Request().UserAgent()
+	if isMobile(userAgent) {
+		return renderPage(c, userID, "templates/student-home-mobile.html")
+	}
 	return renderPage(c, userID, "templates/student-home.html")
 }
 
@@ -162,6 +167,16 @@ func TeacherHomepage(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "не удалось извлечь userID из сессии"})
 	}
 	log.Printf("Homepage for teacher: %v", err)
-	renderPage(c, userID, "templates/teacher-home.html")
-	return nil
+	// userAgent := c.Request().UserAgent()
+	// if isMobile(userAgent) {
+	// 	log.Printf("Mobile: %v", err)
+	// 	return renderPage(c, userID, "templates/teacher-home-mobile.html")
+	// }
+	log.Printf("Dekstop: %v", err)
+	return renderPage(c, userID, "templates/teacher-home.html")
+}
+func isMobile(userAgent string) bool {
+	log.Println("User  Agent:", userAgent)
+	mobileRegex := regexp.MustCompilePOSIX(`(iPhone)`)
+	return mobileRegex.MatchString(userAgent)
 }

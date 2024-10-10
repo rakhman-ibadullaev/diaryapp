@@ -3,37 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Электронный дневник</title>
     <style>
         @font-face {
             font-family: Open Sans; 
             src: url(/subpath/favorite.ttf); 
         }
-        h1 {
-            font-family: Open Sans, 'Light';
-        }
         @font-face {
             font-family: Roboto; 
             src: url(/subpath/Roboto.ttf); 
-        }
-        h1 {
-            font-family: Roboto, 'Light';
         }
         @font-face {
             font-family: Roboto-Mono; 
             src: url(/subpath/RobotoMono-Light.ttf); 
         }
-        h1 {
-            font-family: Roboto-Mono, 'Light';
-        }
         @font-face {
             font-family: Moderustic; 
             src: url(/subpath/Moderustic-Light.ttf); 
         }
-        h1 {
-            font-family: Moderustic, 'Light';
-        }
-
         body {
             font-family: Roboto;
             margin: 0;
@@ -43,75 +31,31 @@
             background-size: cover; 
         }
         .header {
-            font-family: Roboto-Mono;
+            font-family: Open Sans;
             color: white;
             padding: 10px 0;
             text-align: center;
         }
-        .container {
-            width: 1400px;
-            margin: 20px auto;
-            padding-left: 20px;
-            transition: margin-left 0.5s;
-            background: white;
-            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-            z-index: 1;
-        }
         .main-content {
-            background: #fff;
-            min-height: 800px;
+            min-width: 1400;
+            background: #ffffff;
+            min-height: 1200px;
             font-size: 21px;
-            padding: 20px;
-            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
         }
         .footer {
             font-family: Roboto;
-            background-color: #333;
             color: white;
             text-align: center;
-            padding: 1px 0;
-            position: fixed;
+            position: relative;
             bottom: 0;
             width: 100%;
-        }
-        .button {
-            border-radius: 8px;
-            background-color: #5d68d1;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            font-size: 16px;
-            margin: 4px 0;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .button:hover {
-            background-color: #162c6b; 
-        }
-        .logout-button {
-            background-color: #d82013; 
-        }
-        .logout-button:hover {
-            background-color: #7a2626; 
-        }
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .welcome-text {
-            margin-top: 20px;
-            font-size: 24px;
-            font-weight: bold;
         }
         .sidebar {
             height: 100%;
             width: 0;
             position: fixed;
             top: 0;
+            background-color: #2b2a2afa;
             left: 0;
             color: white;
             overflow-x: hidden;
@@ -121,12 +65,12 @@
             white-space: nowrap;
         }
         .sidebarusers {
-            font-family: Moderustic;
             text-align: center;
             box-sizing: border-box;
             height: 100%;
             width: 0;
             position: fixed;
+            background-color: #2b2a2afa;
             top: 0;
             left: 0;
             color: white;
@@ -138,12 +82,27 @@
             white-space: nowrap;
         }
         .sidebarusers a {
+            font-family: Roboto;
             padding: 10px 15px;
             text-decoration: none;
             font-size: 18px;
             color: white;
             display: block;
             transition: 0.3s;
+        }
+        nav {
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            font-size: 15px;
+            color: white;
+            margin: 0 15px;
+            text-decoration: none; /* Убираем подчеркивание */
+        }
+        nav a:hover {
+            color: gray;
         }
         .sidebarusers a:hover {
             background-color: #343534;
@@ -170,11 +129,103 @@
             display: none;
             margin-top: 20px;
         }
+        i {
+            margin: 10px;
+            font-size: 20px;
+        }
+        .mav {
+            display: none;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .mav a {
+            font-size: 20px;
+            color: white;
+            margin: 0 15px;
+            text-decoration: none; /* Убираем подчеркивание */
+        }
+        .mav a:hover {
+            color: gray;
+        }
+        @media only screen and (max-width: 768px) {
+            span {
+                display: none;
+            }
+            nav {
+                display: none;
+            }
+            .mav {
+                display: inline;
+            }
+        }
+
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>DiaryApp - школьный мир</h1>
+        <h1>DiaryApp -  школьный мир</h1>
+    </div>
+    <nav>
+        <a href="#" onclick="openNav()" >
+            <i class = "fas fa-book"></i>
+            <span>Дневник</span>
+        </a>
+        <a href="#" onclick="showActiveUsers()">
+            <i class = "fas fa-users"></i>
+            <span>Пользователи в системе</span>
+        </a>
+            
+        <a href="#" onclick="diaryEmail()">
+            <i class = "fas fa-envelope"></i>
+            <span>Почта</span>
+        </a>
+        <a href="#" onclick="errorMessage()">
+            <i class = "fas fa-exclamation-circle"></i>
+            <span>Сообщить об ошибке</span>
+        </a>
+        <a href="#" onclick="logout()">
+            <i class = "fas fa-sign-out"></i>
+            <span>Выйти</span>
+        </a>
+        <a href="#" onclick="mineAcc()">
+            <i class = "fas fa-user-circle"></i>
+            {{.UserName}}
+        </a>
+    </nav>
+    <div class="mav">
+        <a href="#" onclick="openSettingSidebar()">
+            <i class = "fas fa-bars"></i>
+            Основное меню
+        </a>
+    </div>
+    <div id="SettingsSidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="CloseSettingsSidebar()">&times;</a>
+        <a href="#" onclick="openNav()" >
+            <i class = "fas fa-book"></i>
+            Дневник
+        </a>
+        <a href="#" onclick="showActiveUsers()">
+            <i class = "fas fa-users"></i>
+            Пользователи в системе
+        </a>
+            
+        <a href="#" onclick="diaryEmail()">
+            <i class = "fas fa-envelope"></i>
+            Почта
+        </a>
+        <a href="#" onclick="errorMessage()">
+            <i class = "fas fa-exclamation-circle"></i>
+            Сообщить об ошибке
+        </a>
+        <a href="#" onclick="logout()">
+            <i class = "fas fa-sign-out"></i>
+            Выйти
+        </a>
+        <a href="#" onclick="mineAcc()">
+            <i class = "fas fa-user-circle"></i>
+            {{.UserName}}
+        </a>
     </div>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -187,20 +238,11 @@
     </div>
     <div id="activeUsersSidebar" class="sidebarusers" style="right: 0; left: auto;">
         <a href="javascript:void(0)" class="closebtn" onclick="closeActiveUsersNav()">&times;</a>
-        <h3>Активные пользователи:</h3>
+        <h4>Список пользователей:</h4>
         <div id="activeUsersList"></div>
     </div>
-    <div class="container" id="mainContainer">
-        <div class="main-content">
-            <h2 class="welcome-text">Добро пожаловать, {{.UserName}}!</h2>
-            <div class="button-container">
-                <button class="button" onclick="openNav()">Дневник</button>
-                <button class="button" onclick="showActiveUsers()">Пользователи в системе</button>
-            <div id="activeUsersList"></div>
-                <button class="button logout-button" onclick="logout()">Выйти</button>
-            </div>
-            <p class="welcome-text">Здесь вы можете просмотреть свои оценки, расписание и другую важную информацию.</p>
-        </div>
+    <div class="main-content">    
+        <div id="activeUsersList"></div>
     </div>
     <div class="footer">
         <p>© 2025 "DiaryApp". Производство Рахмана Ибадуллаева. Все права защищены.</p>
@@ -208,6 +250,7 @@
 
     <script>
         function openNav() {
+            event.preventDefault();
             const sidebar = document.getElementById("mySidebar");
             if (sidebar.style.width === "240px") {
                 sidebar.style.width = "0"; 
@@ -215,10 +258,23 @@
                 sidebar.style.width = "240px"; 
             }
         }
+        function openSettingSidebar() {
+            event.preventDefault();
+            const sidebar = document.getElementById("SettingsSidebar");
+            if (sidebar.style.width === "240px") {
+                sidebar.style.width = "0"; 
+            } else {
+                sidebar.style.width = "240px"; 
+            }
+        }
         function closeNav() {
+            event.preventDefault();
             document.getElementById("mySidebar").style.width = "0";
         }
-
+        function CloseSettingsSidebar() {
+            event.preventDefault();
+            document.getElementById("SettingsSidebar").style.width = "0";
+        }
         function viewDiary() {
             window.location.href = '/insert-grades';
         }
@@ -243,6 +299,7 @@
             window.location.href = '/logout';
         }
         function showActiveUsers() {
+        event.preventDefault();
         fetch('/active-users')
           .then(response => response.json())
           .then(data => {
@@ -264,6 +321,7 @@
         }
 
         function closeActiveUsersNav() {
+            event.preventDefault();
             document.getElementById('activeUsersSidebar').style.width = '0';
             document.getElementById("mySidebar").style.paddingLeft = "0";
         }
