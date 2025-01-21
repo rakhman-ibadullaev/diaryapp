@@ -43,6 +43,8 @@ func LoginHandler(c echo.Context) error {
 			session.Values["authenticated"] = true
 			session.Values["userID"] = user.ID
 			session.Values["userRole"] = user.Role
+			session.Values["userEmail"] = email
+			session.Values["userPassword"] = password
 
 			log.Printf("Проверка роли: %s, Проверка ID: %v", user.Role, user.ID)
 

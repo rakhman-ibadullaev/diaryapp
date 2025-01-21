@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Сообщить об ошибке</title>
+    <style>
+        @font-face {
+            font-family: Roboto; 
+            src: url(/subpath/Roboto.ttf); 
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 24px;
+            font-weight: 500;
+        }
+        body {
+            font-family: Roboto;
+            background-color: #f4f4f4;
+            padding: 0;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            width: 40%;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .back-button {
+            font-family: Roboto, sans-serif;
+            font-size: 15px;
+            background-color: #333;
+            color: white;
+            position: absolute; 
+            left: 1px;
+            top: 5px;
+            z-index: 10;
+            border-radius: 10px;
+            padding: 10px 15px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            text-decoration: none; 
+        }
+        .back-button:hover {
+            color: rgb(124, 124, 124);
+        }
+        .back-button i {
+            margin-right: 10px; /* отступ между иконкой и текстом */
+            font-size: 20px; /* увеличенный размер иконки */
+        }
+        .error-message {
+            width: 100%;
+            height: 150px; /* Увеличиваем высоту текстового поля */
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            resize: vertical; /* Позволяем изменять размер по вертикали */
+        }
+        .submit-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 15px; /* Увеличиваем отступ для кнопки */
+            cursor: pointer;
+            width: 100%;
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 15px;
+            color: green;
+            opacity: 0; /* Скрыто изначально */
+            transition: opacity 1s ease-in-out; /* Плавный переход для анимации */
+        }
+        .response.visible {
+            opacity: 1; /* При видимости устанавливаем полную непрозрачность */
+        }
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #272727;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #999999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Мы ценим ваше неравнодушие!
+    </div>
+    <div class="container">
+        <a onclick="goBack()" class="back-button">  
+            <i class="fas fa-home"></i> 
+            <span>На главную</span>
+        </a>
+        <h2>Сообщить об ошибке</h2>
+        <textarea class="error-message" placeholder="Опишите ошибку..."></textarea>
+        <button class="submit-button" onclick="sendError()">Отправить</button>
+        <div class="response" id="responseMessage">Отправлено!</div>
+        <div class="response" id="responseMessage1">Пожалуйста, напишите!</div>
+    </div>
+
+    <script>
+        function sendError() {
+            var message = document.querySelector('.error-message').value;
+            var responseMessage1 = document.getElementById('responseMessage1');
+            if (message.trim() === '') {
+                responseMessage1.classList.remove('visible');; // Предупреждение, если сообщение пустое
+                return; // Выход из функции, если сообщение пустое
+            }
+
+            var responseMessage = document.getElementById('responseMessage');
+            
+            // Сделать сообщение видимым
+            responseMessage.classList.add('visible');
+            
+            // Убрать сообщение через 1.5 секунды
+            setTimeout(function() {
+                responseMessage.classList.remove('visible');
+            }, 1500); // Таймер в миллисекундах (1.5 секунды)
+        }
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
+</body>
+</html>

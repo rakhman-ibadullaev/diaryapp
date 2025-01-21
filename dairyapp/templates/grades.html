@@ -192,6 +192,9 @@
             .back-button span {
                 display: none;
             }
+            .back-button i {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -251,9 +254,6 @@
                 <div class="record-item">${record.Work_type}</div>
                 <div class="record-item">Предмет: ${record.Subject}</div>
                 <div class="record-item">Дата: ${record.Date}</div>
-                <button class="edit-button" data-id="${record.ID}">
-                    <i class="fas fa-edit"></i> Редактировать запись
-                </button>
                 <button class="delete-button">
                     <i class="fas fa-trash"></i> Удалить запись
                 </button>

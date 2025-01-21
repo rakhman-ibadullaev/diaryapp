@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 	"unicode/utf8"
 
 	"github.com/labstack/echo/v4"
@@ -19,6 +20,7 @@ func RegisterHandler(c echo.Context) error {
 			Password string `json:"password"`
 			Role     string `json:"role"`
 			Class    string `json:"class"`
+			Date     string
 		}
 
 		// Декодирование JSON данных из тела запроса
@@ -41,7 +43,9 @@ func RegisterHandler(c echo.Context) error {
 
 		if result {
 			if utf8.RuneCountInString(data.Password) >= 6 {
-				err = database.RegisterUser(database.Databasename, data.Username, data.Email, data.Password, data.Role, data.Class)
+				today := time.Now()
+				data.Date = today.Format("02.01.2006")
+				err = database.RegisterUser(database.Databasename, data.Username, data.Email, data.Password, data.Role, data.Class, data.Date)
 				if err != nil {
 					return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 						"success": false,

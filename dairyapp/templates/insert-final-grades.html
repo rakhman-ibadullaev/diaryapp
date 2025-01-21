@@ -182,19 +182,6 @@
                 <select id="studentSelect" disabled>
                     <option value="">Сначала выберите класс</option>
                 </select>
-
-                <label for="grade">Оценка</label>
-                <select id="grade" name="grade" required>
-                    <option value="">Выберите оценку</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-
-                <label for="workType">Подпись к оценке</label>
-                <input type="text" id="workType" name="workType" placeholder="Если хотите, то добавьте подпись к оценке (Напр. Контрольная)">
-                
                 <label for="subject">Предмет</label>
                 <select id="subject" name="subject" required>
                     <option value="">Выберите предмет</option>
@@ -203,23 +190,85 @@
                     <option value="Английский язык">Английский язык</option>
                     <option value="Химия">Химия</option>
                     <option value="Биология">Биология</option>
-                    <option value="Обществознание">Обществознание</option>
+                    <option value="Общество">Общество</option>
                     <option value="Информатика">Информатика</option>
-                    <option value="Физкультура">Физкультура</option>
+                    <option value="Физика">Физическая культура</option>
                     <option value="ОБиЗР">ОБиЗР</option>
                     <option value="Технология">Технология</option>
-                    <option value="Изобразительное искусство">Изобразительное искусство</option>
+                    <option value="Изобразительное исскуство">Изобразительное исскуство</option>
                     <option value="Физика">Физика</option>
                     <option value="История">История</option>
-                    <option value="География">География</option>
-                    <option value="Литература">Литература</option>
                 </select>
                 
-                <label for="date">Дата</label>
-                <input type="date" id="date" name="date" required>
+                <label for="grade">1 четверть</label>
+                <select id="grade1" name="grade">
+                    <option value="">Выберите оценку</option>
+                    <option value="NotAtt">Не аттестован</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="grade">2 четверть</label>
+                <select id="grade2" name="grade">
+                    <option value="">Выберите оценку</option>
+                    <option value="NotAtt">Не аттестован</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="grade">3 четверть</label>
+                <select id="grade3" name="grade">
+                    <option value="">Выберите оценку</option>
+                    <option value="NotAtt">Не аттестован</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="grade">4 четверть</label>
+                <select id="grade4" name="grade">
+                    <option value="">Выберите оценку</option>
+                    <option value="NotAtt">Не аттестован</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="grade">Годовая</label>
+                <select id="grade-year" name="grade">
+                    <option value="">Выберите оценку</option>
+                    <option value="NotAtt">Не аттестован</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="grade">Экзамен</label>
+                <select id="grade-exam" name="grade">
+                    <option value="">Выберите оценку</option>
+                    <option value="NotAtt">Не аттестован</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <label for="grade">Итоговая</label>
+                <select id="grade-final" name="grade">
+                    <option value="">Выберите оценку</option>
+                    <option value="NotAtt">Не аттестован</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                
+
+
             </div>
 
-            <button type="submit" class="button">Сохранить оценку</button>
+            <button type="submit" class="button">Подтвердить</button>
         </form>
 
         <!-- Блок для сообщений -->
@@ -227,8 +276,7 @@
     </div>
 
     <script>
-
-document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
     const studentSelect = document.getElementById('studentSelect');
 
     // Функция для отображения студентов в выпадающем списке
@@ -289,36 +337,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Вызов fetchStudents при загрузке страницы
     displayStudents([]); // Изначально показываем пустое состояние
-
-    // Обработчик события для формы
     document.getElementById('student-form').addEventListener('submit', (e) => {
         e.preventDefault(); // Отменяем стандартное поведение формы
 
         // Получаем значения полей формы
-        const classSelect = document.getElementById('classSelect').value;
-        const studentSelect = document.getElementById('studentSelect').value;
-        const grade = document.getElementById('grade').value;
-        const workType = document.getElementById('workType').value;
         const subject = document.getElementById('subject').value;
-        const date = document.getElementById('date').value;
+        const studentSelect = document.getElementById('studentSelect').value;
+        const first = document.getElementById('grade1').value;
+        const second = document.getElementById('grade2').value;
+        const third = document.getElementById('grade3').value;
+        const fourth = document.getElementById('grade4').value;
+        const year = document.getElementById('grade-year').value;
+        const exam = document.getElementById('grade-exam').value;
+        const final = document.getElementById('grade-final').value;
 
         const messageDiv = document.getElementById('messageDiv'); // Не забудьте определить messageDiv
 
         // Проверяем, что все поля заполнены
-        if (classSelect && studentSelect && grade && subject && date) {
+        if (subject && studentSelect) {
             // Отправляем данные на сервер
-            fetch('/insert-grades', {
+            fetch('/insert-final-grades', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    class: classSelect,
                     student: studentSelect,
-                    grade: grade,
-                    workType: workType,
                     subject: subject,
-                    date: date
+                    first: first,
+                    second: second,
+                    third: third,
+                    fourth: fourth,
+                    year: year,
+                    exam: exam,
+                    final: final,
                 })
             })
             .then((response) => response.json())
@@ -350,15 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displayStudents([]); // Сбрасываем студентов, если класс не выбран
         }
     });
-});
+})
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-

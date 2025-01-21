@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"regexp"
 	"sync"
 	"time"
 
@@ -15,6 +14,9 @@ import (
 
 type PageData struct {
 	UserName string
+	Email    string
+	Password string
+	Date     string
 }
 type Session struct {
 	ID         string
@@ -124,6 +126,14 @@ func DiaryPage(c echo.Context) error {
 	tmpl.Execute(c.Response(), nil)
 	return c.Render(http.StatusOK, "diaryapp.html", nil)
 }
+func SendError(c echo.Context) error {
+	tmpl, err := template.ParseFiles("templates/send-error.html")
+	if err != nil {
+		return c.String(http.StatusInternalServerError, err.Error())
+	}
+	tmpl.Execute(c.Response(), nil)
+	return c.Render(http.StatusOK, "send-error.html", nil)
+}
 
 // StudentHomepage handles rendering the homepage for students
 func StudentHomepage(c echo.Context) error {
@@ -144,10 +154,6 @@ func StudentHomepage(c echo.Context) error {
 	}
 
 	log.Printf("Homepage for student: userID=%s", userID)
-	userAgent := c.Request().UserAgent()
-	if isMobile(userAgent) {
-		return renderPage(c, userID, "templates/student-home-mobile.html")
-	}
 	return renderPage(c, userID, "templates/student-home.html")
 }
 
@@ -167,16 +173,63 @@ func TeacherHomepage(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "не удалось извлечь userID из сессии"})
 	}
 	log.Printf("Homepage for teacher: %v", err)
-	// userAgent := c.Request().UserAgent()
-	// if isMobile(userAgent) {
-	// 	log.Printf("Mobile: %v", err)
-	// 	return renderPage(c, userID, "templates/teacher-home-mobile.html")
-	// }
-	log.Printf("Dekstop: %v", err)
 	return renderPage(c, userID, "templates/teacher-home.html")
 }
-func isMobile(userAgent string) bool {
-	log.Println("User  Agent:", userAgent)
-	mobileRegex := regexp.MustCompilePOSIX(`(iPhone)`)
-	return mobileRegex.MatchString(userAgent)
+func AccountHomepage(c echo.Context) error {
+	if c.Request().Method == http.MethodGet {
+		_, err := authenticate(c)
+		if err != nil {
+			return err
+		}
+		session, err := store.Get(c.Request(), "session-name")
+		if err != nil {
+			return err
+		}
+
+		userID, ok := session.Values["userID"].(string)
+		if !ok {
+			log.Println("не удалось извлечь userID из сессии")
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "не удалось извлечь userID из сессии"})
+		}
+		email, ok := session.Values["userEmail"].(string)
+		if !ok {
+			log.Println("не удалось извлечь userEmail из сессии")
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "не удалось извлечь userID из сессии"})
+		}
+		password, ok := session.Values["userPassword"].(string)
+		if !ok {
+			log.Println("не удалось извлечь userPassword из сессии")
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "не удалось извлечь userID из сессии"})
+		}
+		username, err := database.GetUserByID(userID, database.Databasename)
+		if err != nil {
+			log.Printf("Ошибка получения username из базы данных: %v", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Ошибка получения данных пользователя"})
+		}
+		date, err := database.GetDate(database.Databasename, userID)
+		if err != nil {
+			return err
+		}
+		log.Printf("%v", date)
+		data := PageData{
+			UserName: username,
+			Email:    email,
+			Password: password,
+			Date:     date,
+		}
+
+		tmpl, err := template.ParseFiles("templates/account.html")
+		if err != nil {
+			log.Printf("Ошибка отображения шаблона: %v", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Ошибка отображения страницы"})
+		}
+
+		// Render the template
+		if err = tmpl.Execute(c.Response().Writer, data); err != nil {
+			log.Printf("Ошибка отображения шаблона: %v", err)
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Ошибка отображения страницы"})
+		}
+
+	}
+	return nil
 }

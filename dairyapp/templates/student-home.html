@@ -3,118 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Электронный дневник</title>
     <style>
-    @font-face {
-        font-family: Open Sans; 
-        src: url(/subpath/favorite.ttf); 
-    }
-    h1 {
-        font-family: Open Sans, 'Light';
-    }
-    @font-face {
-        font-family: Roboto; 
-        src: url(/subpath/Roboto.ttf); 
-    }
-    h1 {
-        font-family: Roboto, 'Light';
-    }
-    @font-face {
-        font-family: Roboto-Mono; 
-        src: url(/subpath/RobotoMono-Light.ttf); 
-    }
-    h1 {
-        font-family: Roboto-Mono, 'Light';
-    }
-    @font-face {
-        font-family: Moderustic; 
-        src: url(/subpath/Moderustic-Light.ttf); 
-    }
-    h1 {
-        font-family: Moderustic, 'Light';
-    }
-
+        @font-face {
+            font-family: Open Sans; 
+            src: url(/subpath/favorite.ttf); 
+        }
+        @font-face {
+            font-family: Roboto; 
+            src: url(/subpath/Roboto.ttf); 
+        }
+        @font-face {
+            font-family: Roboto-Mono; 
+            src: url(/subpath/RobotoMono-Light.ttf); 
+        }
+        @font-face {
+            font-family: Moderustic; 
+            src: url(/subpath/Moderustic-Light.ttf); 
+        }
+        p {
+            padding-right: 10px;
+        }
         body {
             font-family: Roboto;
             margin: 0;
             padding: 0;
-            background: url('/subpath/frt.jpg');
+            background: url('/subpath/108339.jpg');
             background-repeat: no-repeat;
             background-size: cover; 
         }
         .header {
-            font-family: Roboto-Mono;
-            background-color: #1a1919;
+            font-family: Open Sans;
             color: white;
             padding: 10px 0;
             text-align: center;
-        }
-        .container {
-            width: calc(100% - 300px);
-            width: 1400px;
-            margin: 20px auto;
-            padding-left: 20px;
-            transition: margin-left 0.5s;
-            background: white;
-            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-            z-index: 1;
+            font-size: 30px;
+            font-weight: bold;
+            margin: 10px;
         }
         .main-content {
-            background: white;
-            min-height: 800px;
+            min-width: 1400;
+            background: #ffffff;
+            min-height: 740px;
             font-size: 21px;
-            padding: 20px;
-            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
         }
         .footer {
             font-family: Roboto;
-            background-color: #333;
+            font-size: 11px;
             color: white;
-            text-align: center;
-            padding: 1px 0;
-            position: fixed;
+            text-align: end;
+            position: relative;
             bottom: 0;
             width: 100%;
         }
-        .button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            font-size: 16px;
-            margin: 4px 0;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .button:hover {
-            background-color: #2d6d31; 
-        }
-        .logout-button {
-            background-color: #d82013; 
-        }
-        .logout-button:hover {
-            background-color: #7a2626; 
-        }
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .welcome-text {
-            margin-top: 20px;
-            font-size: 24px;
-            font-weight: bold;
-        }
         .sidebar {
+            position: fixed;
             height: 100%;
             width: 0;
-            position: fixed;
+            background-color: #2b2a2afa;
             top: 0;
             left: 0;
-            background-color: #252525;
             color: white;
             overflow-x: hidden;
             transition: 0.5s;
@@ -123,24 +72,23 @@
             white-space: nowrap;
         }
         .sidebarusers {
-            font-family: Moderustic;
             text-align: center;
-            box-sizing: border-box;
+            position: fixed;
             height: 100%;
             width: 0;
-            position: fixed;
+            background-color: #2b2a2afa;
             top: 0;
-            left: 0;
-            background-color: #252525;
+            left: auto;
+            right: 0;
             color: white;
             overflow-x: hidden;
             transition: 0.5s;
             padding-top: 65px;
-            line-height: 1.5;
             z-index: 1;
             white-space: nowrap;
         }
         .sidebarusers a {
+            font-family: Roboto;
             padding: 10px 15px;
             text-decoration: none;
             font-size: 18px;
@@ -148,19 +96,33 @@
             display: block;
             transition: 0.3s;
         }
+        nav {
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            font-size: 15px;
+            color: white;
+            margin: 0 15px;
+            text-decoration: none; /* Убираем подчеркивание */
+        }
+        nav a:hover {
+            color: gray;
+        }
         .sidebarusers a:hover {
-            background-color: #2d6d31;
+            background-color: #343534;
         }
         .sidebar a {
             padding: 10px 15px;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 15px;
             color: white;
             display: block;
             transition: 0.3s;
         }
         .sidebar a:hover {
-            background-color: #2d6d31;
+            background-color: #393a39;
         }
         .closebtn {
             position: absolute;
@@ -173,89 +135,260 @@
             display: none;
             margin-top: 20px;
         }
+        i {
+            margin: 10px;
+            font-size: 20px;
+        }
+        .mav {
+            display: none;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .mav a {
+            text-align: center;
+            font-size: 20px;
+            color: white;
+            margin: 0 auto;
+            text-decoration: none; /* Убираем подчеркивание */
+        }
+        .mav a:hover {
+            color: gray;
+        }
+        .spaced-button {
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 15px;
+            color: white;
+        }
+        @media only screen and (max-width: 768px) {
+            span {
+                display: none;
+            }
+            nav {
+                display: none;
+            }
+            .mav {
+                display: inline;
+            }
+            .sidebarusers {
+                right: auto; 
+                left: auto; 
+            }
+            .header {
+                text-align: center;
+                padding: auto, auto;
+                padding-left: auto;
+            }
+        }
+        h1 {
+            font-size: 20px;
+            padding-left: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>DiaryApp - школьный мир</h1>
+        DiaryApp - школьный мир
+    </div>
+    <nav>
+        <a href="#" onclick="openNav()" >
+            <i class = "fas fa-book"></i>
+            <span>Дневник</span>
+        </a>
+        <a href="#" onclick="showActiveUsers()">
+            <i class = "fas fa-users"></i>
+            <span>Пользователи в системе</span>
+        </a>
+        <a href="#" onclick="errorMessage()">
+            <i class = "fas fa-exclamation-circle"></i>
+            <span>Сообщить об ошибке</span>
+        </a>
+        <a href="#" onclick="logout()">
+            <i class = "fas fa-sign-out"></i>
+            <span>Выйти</span>
+        </a>
+        <a href="#" onclick="mineAcc()">
+            <i class = "fas fa-user-circle"></i>
+            {{.UserName}}
+        </a>
+    </nav>
+    <div class="mav">
+        <a href="#" onclick="openSettingSidebar()">
+            <i class = "fas fa-bars"></i>
+            Основное меню
+        </a>
+    </div>
+    <div id="SettingsSidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="CloseSettingsSidebar()">&times;</a>
+        <a href="#" onclick="openNav()" >
+            <i class = "fas fa-book"></i>
+            Дневник
+        </a>
+        <a href="#" onclick="showActiveUsers()">
+            <i class = "fas fa-users"></i>
+            Пользователи в системе
+        </a>
+            
+        <a href="#" onclick="diaryEmail()">
+            <i class = "fas fa-envelope"></i>
+            Почта
+        </a>
+        <a href="#" onclick="errorMessage()">
+            <i class = "fas fa-exclamation-circle"></i>
+            Сообщить об ошибке
+        </a>
+        <a href="#" onclick="logout()">
+            <i class = "fas fa-sign-out"></i>
+            Выйти
+        </a>
+        <a href="#" onclick="mineAcc()">
+            <i class = "fas fa-user-circle"></i>
+            {{.UserName}}
+        </a>
     </div>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a href="#" onclick="viewDiary()">Дневник</a>
-        <a href="#" onclick="viewGrades()">Список оценок за четверть</a>
+        <h1>Дневник</h1>
+        <a href="#" onclick="viewDiary()">Расписание и оценки</a>
+        <h1>Отчеты</h1>
         <a href="#" onclick="viewFinalGrades()">Итоговые отметки</a>
+        <a href="#" onclick="viewInfo()">Информационное письмо </a>
+        <a href="#" onclick="viewAllGrades()">Успеваемость и посещаемость</a>
+        <h1>Другое</h1>
+        <a href="#" onclick="viewDiaryApp()">DiaryApp</a>
     </div>
-    <div id="activeUsersSidebar" class="sidebarusers" style="right: 0; left: auto;">
+    <div id="activeUsersSidebar" class="sidebarusers">
         <a href="javascript:void(0)" class="closebtn" onclick="closeActiveUsersNav()">&times;</a>
-        <h3>Активные пользователи:</h3>
+        <h4>Список пользователей:</h4>
         <div id="activeUsersList"></div>
     </div>
-    <div class="container" id="mainContainer">
-        <div class="main-content">
-            <h2 class="welcome-text">Добро пожаловать, {{.UserName}}!</h2>
-            <div class="button-container">
-                <button class="button" onclick="openNav()">Дневник</button>
-                <button class="button" onclick="showActiveUsers()">Пользователи в системе</button>
-            <div id="activeUsersList"></div>
-                <button class="button logout-button" onclick="logout()">Выйти</button>
-            </div>
-            <p class="welcome-text">Здесь вы можете просмотреть свои оценки, расписание и другую важную информацию.</p>
-
-            <div class="facts">
-                <h3>Советы по учебе:</h3>
-                <ul>
-                    <li>Планируйте свое время, чтобы успевать заниматься всеми предметами.</li>
-                    <li>Делайте перерывы во время занятий, чтобы мозг отдыхал и лучше усваивал информацию.</li>
-                    <li>Задавайте вопросы учителю, если что-то непонятно.</li>
-                </ul>
-            </div>
-            <div class="facts">
-                <h3>Интересные факты о школе:</h3>
-                <ul>
-                    <li>Первая школа была основана в Древнем Египте около 3000 лет до н.э.</li>
-                    <li>В средневековой Европе обучение проводилось в монастырях и соборах.</li>
-                    <li>Современная система образования сформировалась в XIX веке.</li>
-                </ul>
-            </div>
-            <div class="facts">
-                <h3>Факты об проекте DairyApp:</h3>
-                <ul>
-                    <li>В 15 лет я задумался о создании эффективного веб-ресурса типа клиент-сервер.</li>
-                    <li>Изначально DairyApp должен был быть написан на C++ с использованием фреймворка Qt.</li>
-                    <li>В будущем проект может перейти на базу данных PostgreSQL для работы с большим трафиком.</li>
-                </ul>
-            </div>
+    <div class="main-content">    
+        <div id="activeUsersList"></div>
+        <div class="container home">
+        <button onclick="viewDiary()" class="col section-home-page">
+            <img src="/subpath/diary-icon.png" alt="Дневник" height="150px" width="150px">
+            <p>Расписание и оценки</p>
+            <p class="description-of-section">Расписание, оценки и домашнее задание</p>
+        </button>
+        <button onclick="viewFinalGrades()" class="col section-home-page">
+            <img src="/subpath/7444.png" alt="Дневник" height="150px" width="150px">
+            <p>Итоговые оценки</p>
+            <p class="description-of-section">Посмотрите ваши четвертные, годовые, итоговые отметки</p>
+        </button>
+        <button onclick="errorMessage()" class="col section-home-page">
+            <img src="/subpath/dangerous-icon.png" alt="Дневник" height="150px" width="150px">
+            <p>Сообщить об ошибке</p>
+            <p class="description-of-section">Нашли ошибку на сайте? Сообщите нам!</p>
+        </button>
+        <button onclick="viewDiaryApp()" class="col section-home-page">
+            <img src="/subpath/profile-icon.png" alt="Дневник" height="150px" width="150px">
+            <p>DiaryApp</p>
+            <p class="description-of-section">Здесь вы можете просмотреть документацию данного сайта</p>
+        </button>  
         </div>
+    
     </div>
     <div class="footer">
-        <p>© 2025 "DiaryApp". Производство Рахмана Ибадуллаева. Все права защищены.</p>
-    </div>
 
+        <p>© 2025 "DiaryApp". Производство Рахмана Ибадуллаева. Все права защищены.</p>
+        <p>Контакты: diaryapp@gmail.com / +7(994)-994-02-50</p>
+    </div>
+    <style>
+        .home{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 150px 0 150px;
+        }
+
+        .section-home-page{
+            margin: 0 10px;
+            width: 240px;
+            height: 400px;
+            border: none;
+            align-items: center;
+            color: rgb(0, 0, 0);
+            border-top: 10px rgb(0, 0, 0) solid;
+            font-weight: 700;
+            font-size: 20px;
+            background: #ffffff;
+            box-shadow: 0 -1px 15px black;
+            border-radius: 10px;
+        }
+
+        .section-home-page:hover{
+            transition: 0.1s;
+            background: #979797;
+            scale: 1.025;
+            cursor: pointer;
+        }
+
+        .description-of-section{
+            font-weight: 500;
+            font-size: 12px;
+        }
+    </style>
     <script>
         function openNav() {
-            document.getElementById("mySidebar").style.width = "250px";
+            event.preventDefault();
+            const sidebar = document.getElementById("mySidebar");
+            if (sidebar.style.width === "240px") {
+                sidebar.style.width = "0"; 
+            } else {
+                sidebar.style.width = "240px"; 
+            }
         }
-
+        function openSettingSidebar() {
+            event.preventDefault();
+            const sidebar = document.getElementById("SettingsSidebar");
+            if (sidebar.style.width === "240px") {
+                sidebar.style.width = "0"; 
+            } else {
+                sidebar.style.width = "240px"; 
+            }
+        }
         function closeNav() {
+            event.preventDefault();
             document.getElementById("mySidebar").style.width = "0";
         }
-
+        function CloseSettingsSidebar() {
+            event.preventDefault();
+            document.getElementById("SettingsSidebar").style.width = "0";
+        }
+        function diaryEmail() {
+            event.preventDefault();
+        }
+        function mineAcc() {
+            event.preventDefault();
+            window.location.href = "/my-acc"
+        }
+        function errorMessage() {
+            event.preventDefault();
+        }
+        function viewInfo() {
+            window.location.href = "/info";
+        }       
         function viewDiary() {
-            window.location.href = '/diary';
+            window.location.href = '/diary-1';
         }
-
-        function viewGrades() {
-            window.location.href = '/grades';
-        }
-
         function viewFinalGrades() {
-            window.location.href = '/final-grades';
+            window.location.href = "/final-grades";
         }
-
+        function viewAllGrades() {
+            window.location.href = "/my-grades";
+        }
+        function viewDiaryApp() {
+            window.location.href = "/diaryapp";
+        }
         function logout() {
             window.location.href = '/logout';
         }
+        function errorMessage() {
+            window.location.href = "/send-error";
+        }
         function showActiveUsers() {
+        event.preventDefault();
         fetch('/active-users')
           .then(response => response.json())
           .then(data => {
@@ -266,12 +399,18 @@
                     userItem.textContent = user;
                     activeUsersList.appendChild(userItem);
                 });
-                document.getElementById('activeUsersSidebar').style.width = '250px';
+                const sidebar = document.getElementById("activeUsersSidebar");
+                if (sidebar.style.width === "240px") {
+                    sidebar.style.width = "0"; 
+                } else {
+                    sidebar.style.width = "240px"; 
+                }
             })
           .catch(error => console.error('Error:', error));
         }
 
         function closeActiveUsersNav() {
+            event.preventDefault();
             document.getElementById('activeUsersSidebar').style.width = '0';
             document.getElementById("mySidebar").style.paddingLeft = "0";
         }

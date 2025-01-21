@@ -1,6 +1,8 @@
 package main
 
 import (
+	"dairyapp/average"
+	dairyfinalgrades "dairyapp/dairy-final-grades"
 	"dairyapp/database"
 	"dairyapp/grades"
 	"dairyapp/homepage"
@@ -32,7 +34,6 @@ func main() {
 	login.InitStore(store)
 	homepage.InitStore(store)
 	grades.InitStore(store)
-
 	// Настройка опций для cookie
 	store.Options = &sessions.Options{
 		Path:     "/",
@@ -52,13 +53,17 @@ func main() {
 	e.POST("/login", login.LoginHandler)
 	e.GET("/logout", login.LogoutHandler)
 	// Маршруты основной страницы
+	e.GET("/send-error", homepage.SendError, RoleMiddleware(store, "admin", "teacher", "student"))
 	e.GET("/student/home", homepage.StudentHomepage, RoleMiddleware(store, "admin", "student"))
 	e.GET("/teacher/home", homepage.TeacherHomepage, RoleMiddleware(store, "admin", "teacher"))
 	e.GET("/diaryapp", homepage.DiaryPage, RoleMiddleware(store, "admin", "teacher", "student"))
 	e.GET("/active-users", homepage.ActiveUsersHandler, RoleMiddleware(store, "admin", "teacher", "student"))
+	e.GET("/average", average.AverageHandler, RoleMiddleware(store, "admin", "teacher"))
+	e.POST("/average", average.AverageHandler)
+	//Маршруты личного аккаунта полльзователя
+	e.GET("/my-acc", homepage.AccountHomepage, RoleMiddleware(store, "admin", "teacher", "student"))
 	//Маршруты внесения оценок
 	e.POST("/students", grades.GetStudentsList)
-
 	e.GET("/insert-grades", grades.InsertGradesHandler, RoleMiddleware(store, "admin", "teacher"))
 	e.POST("/insert-grades", grades.InsertGradesHandler)
 	//Маршруты оценок-записей для просмотра учителя
@@ -66,9 +71,19 @@ func main() {
 	e.GET("/all-grades", grades.AllGrades, RoleMiddleware(store, "admin", "teacher"))
 	//Маршрут удаление записи
 	e.POST("/delete-grades", grades.DeleteGrades)
-	//Маршрут для просмотра оценок учеником
-	e.GET("/diary", schedule.ScheduleHand)
-	e.POST("/diary", schedule.ScheduleHand)
+	//Маршрут для расписания
+	e.GET("/diary-1", schedule.ScheduleHand1)
+	e.GET("/diary-2", schedule.ScheduleHand2)
+	e.GET("/diary-3", schedule.ScheduleHand3)
+	e.GET("/diary-4", schedule.ScheduleHand4)
+	e.GET("/diary-5", schedule.ScheduleHand5)
+	e.GET("/diary-6", schedule.ScheduleHand6)
+	e.GET("/diary-7", schedule.ScheduleHand7)
+	e.GET("/diary-8", schedule.ScheduleHand8)
+	// Итоговые отметки
+	e.GET("/final-grades", schedule.StudentFinalGrades, RoleMiddleware(store, "admin", "student"))
+	e.GET("/insert-final-grades", dairyfinalgrades.FinalGradesHandler, RoleMiddleware(store, "admin", "teacher"))
+	e.POST("/insert-final-grades", dairyfinalgrades.FinalGradesHandler)
 	// Дополнительные функции
 	go homepage.CleanupInactiveUsers()
 	// Открытие базы данных

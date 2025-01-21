@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"math"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
@@ -20,6 +22,7 @@ type User struct {
 	Role           string
 }
 type Grades struct {
+	Weekday     time.Weekday
 	ID          string
 	Class       string
 	Grade       string
@@ -29,7 +32,34 @@ type Grades struct {
 	ID_Student  string
 	StudentName string
 }
+type Data struct {
+	Student string
+	Subject string
+	First   string
+	Second  string
+	Third   string
+	Fourth  string
+	Year    string
+	Exam    string
+	Final   string
+}
 
+func roundToTwoDecimalPlaces(num float64) float64 {
+	return math.Round(num*100) / 100
+}
+func Average(numbers []int) float32 {
+	if len(numbers) == 0 {
+		return 0 // Возвращаем 0, если срез пустой
+	}
+
+	var total int
+	for _, number := range numbers {
+		total += number
+	}
+
+	average := float32(total) / float32(len(numbers)) // Вычисляем среднее значение
+	return average
+}
 func LoginUser(dbname, email, password string) (*User, bool, error) {
 	db, err := sql.Open("sqlite3", dbname)
 	if err != nil {
@@ -57,7 +87,7 @@ func LoginUser(dbname, email, password string) (*User, bool, error) {
 }
 
 // RegisterUser регистрирует нового пользователя.
-func RegisterUser(dbname, username, email, password, role, class string) error {
+func RegisterUser(dbname, username, email, password, role, class, date string) error {
 	db, err := sql.Open("sqlite3", dbname)
 	if err != nil {
 		return err
@@ -69,13 +99,13 @@ func RegisterUser(dbname, username, email, password, role, class string) error {
 		return err
 	}
 
-	stmt, err := db.Prepare("INSERT INTO users(username, email, password, role, class) VALUES(?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO users(username, email, password, role, class, date) VALUES(?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(username, email, hashedPassword, role, class)
+	_, err = stmt.Exec(username, email, hashedPassword, role, class, date)
 	return err
 }
 
@@ -116,7 +146,8 @@ func OpenDataBase(dbname string) (*sql.DB, error) {
     	email TEXT NOT NULL UNIQUE,
     	password TEXT NOT NULL,
 		role TEXT NOT NULL,
-		class TEXT
+		class TEXT,
+		date TEXT NOT NULL
 	);`
 	_, err = db.Exec(sqlStmtUsers)
 	if err != nil {
@@ -129,7 +160,7 @@ func OpenDataBase(dbname string) (*sql.DB, error) {
 	sqlStmtGrades := `
 	CREATE TABLE IF NOT EXISTS grades (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		grade TEXT NOT NULL,
+		grade INTEGER NOT NULL,
 		subject TEXT NOT NULL,
 		work_type TEXT,
 		date TEXT NOT NULL,
@@ -145,8 +176,29 @@ func OpenDataBase(dbname string) (*sql.DB, error) {
 		return nil, err
 	}
 	log.Println("Создана/обновлена таблица grades") // Исправлено
-
-	return db, nil // Возвращаем открытое соединение и nil для ошибки
+	sqlStmtFinalGrades := `
+	CREATE TABLE IF NOT EXISTS finalgrades (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		id_student INTEGER NOT NULL,
+		subject TEXT NOT NULL,
+		first TEXT,
+		second TEXT,
+		third TEXT,
+		fourth TEXT,
+		year TEXT, 
+		exam TEXT,
+		final TEXT,
+		FOREIGN KEY(id_student) REFERENCES users(id)
+		UNIQUE(id_student, subject)
+	);`
+	_, err = db.Exec(sqlStmtFinalGrades)
+	if err != nil {
+		log.Printf("Ошибки grades %v", err)
+		db.Close()
+		return nil, err
+	}
+	log.Println("Создана/обновлена таблица finalgrades") // Исправлено
+	return db, nil                                       // Возвращаем открытое соединение и nil для ошибки
 }
 func GetUserByID(user_id string, dbname string) (string, error) {
 	db, err := sql.Open("sqlite3", dbname)
@@ -325,15 +377,16 @@ func DeleteGrades(dbname, id string) error {
 
 	return nil
 }
-func GetSchedules(dbname, date, id string) ([]Grades, error) {
+func GetSchedules(dbname, id string) ([]Grades, error) {
 	db, err := sql.Open("sqlite3", dbname)
 	if err != nil {
 		return nil, err
 	}
 	defer db.Close()
-	query := `SELECT id, grade, subject, work_type, FROM grades WHERE id_student = ? AND date = ? `
+	query := `SELECT id, grade, subject, work_type, date FROM grades WHERE id_student = ?`
 	// Выполняем запрос к базе данных
-	rows, err := db.Query(query, id, date)
+	log.Printf("Id is %v", id)
+	rows, err := db.Query(query, id)
 	if err != nil {
 		return nil, fmt.Errorf("ошибка при выполнении запроса: %w", err)
 	}
@@ -342,9 +395,12 @@ func GetSchedules(dbname, date, id string) ([]Grades, error) {
 	for rows.Next() {
 		var grade Grades
 		// Сканируем строки в структуру
-		if err := rows.Scan(&grade.ID, &grade.Grade, &grade.Subject, &grade.Work_type); err != nil {
+		if err := rows.Scan(&grade.ID, &grade.Grade, &grade.Subject, &grade.Work_type, &grade.Date); err != nil {
 			return nil, fmt.Errorf("ошибка при сканировании строки: %w", err)
 		}
+		log.Printf("Date is %v", grade.Date)
+		grade.Weekday = ParseWeekDate(grade.Date)
+
 		log.Printf("%v", grade)
 		grades = append(grades, grade)
 	}
@@ -353,4 +409,95 @@ func GetSchedules(dbname, date, id string) ([]Grades, error) {
 	}
 	log.Printf("Grades is %v", grades)
 	return grades, nil
+}
+func ParseWeekDate(Date string) time.Weekday {
+	// Параметры для парсинга даты
+	layout := "2020-02-01" // Формат даты: дд-мм-гг
+
+	// Парсинг даты
+	date, err := time.Parse(layout, Date)
+	if err != nil {
+		fmt.Println("Ошибка при парсинге даты:", err)
+	}
+	// Получение дня недели
+	dayOfWeek := date.Weekday()
+	return dayOfWeek
+}
+func InsertFinalGrades(dbname string, data Data) error {
+	db, err := sql.Open("sqlite3", dbname)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	stmt, err := db.Prepare("INSERT OR REPLACE INTO finalgrades(id_student, subject, first, second, third, fourth, year, exam, final) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	if err != nil {
+		return err
+	}
+	student, err := GetUserByName(data.Student, Databasename)
+	log.Printf("is %v", student.ID)
+	_, err = stmt.Exec(student.ID, data.Subject, data.First, data.Second, data.Third, data.Fourth, data.Year, data.Exam, data.Final)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	return nil
+}
+func GetDate(dbname string, id string) (string, error) {
+	// Открываем базу данных
+	db, err := sql.Open("sqlite3", dbname)
+	if err != nil {
+		return "", err
+	}
+	defer db.Close()
+
+	// Запрос на получение даты
+	query := `SELECT date FROM users WHERE id = ?`
+
+	log.Printf("Id is %v", id)
+
+	var date string
+	// Выполняем запрос к базе данных
+	err = db.QueryRow(query, id).Scan(&date) // Передаем адрес переменной date
+	if err != nil {
+		return "", err
+	}
+
+	log.Printf("Retrieved date: %v", date)
+	return date, nil
+}
+
+func AverageMark(dbname string, username string, subject string) (float32, error) {
+	// Открываем базу данных
+	db, err := sql.Open("sqlite3", dbname)
+	if err != nil {
+		return 0, err
+	}
+	defer db.Close()
+
+	User, err := GetUserByName(username, dbname)
+	if err != nil {
+		return 0, err
+	}
+	query := `SELECT grade FROM grades WHERE id_student = ? AND subject = ?`
+	// Выполняем запрос к базе данных
+	rows, err := db.Query(query, User.ID, subject)
+	if err != nil {
+		return 0, fmt.Errorf("ошибка при выполнении запроса: %w", err)
+	}
+	defer rows.Close() // Закрываем rows после использования
+
+	var grades []int
+	for rows.Next() {
+		var grade int
+		// Сканируем строки в структуру
+		if err := rows.Scan(&grade); err != nil {
+			return 0, fmt.Errorf("ошибка при сканировании строки: %w", err)
+		}
+		grades = append(grades, grade)
+	}
+	log.Printf("%v", grades)
+	average := Average(grades)
+	log.Printf("%v", average)
+	roundedaverage := roundToTwoDecimalPlaces(float64(average))
+	return float32(roundedaverage), nil
 }
